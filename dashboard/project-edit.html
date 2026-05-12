@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit project — Portfolio CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html">Site content <span class="badge">⌘2</span></a>
+    </nav>
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html" class="active">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html">Chat <span class="badge"></span></a>
+    </nav>
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html">Users <span class="badge">3</span></a>
+      <a href="settings.html">Settings <span class="badge"></span></a>
+    </nav>
+    <div class="a-foot"><span>v 1.0</span><a href="index.html" target="_blank" rel="noopener">View site ↗</a></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb"><a href="dashboard.html" style="color:var(--muted);text-decoration:none">Dashboard</a><span class="sep">/</span><a href="projects-manager.html" style="color:var(--muted);text-decoration:none">Projects</a><span class="sep">/</span><b>RAF-SP</b></div>
+      <div class="right">
+        <span class="live"><a href="raf-sp.html" target="_blank" rel="noopener">Live · /raf-sp ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn"><span class="av">AA</span><span class="nm">Ali</span><span class="ch">▾</span></button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Edit project</h1>
+          <div class="h1-sub">RAF-SP · Last edited 5 May 2026 by Ali</div>
+        </div>
+      </div>
+
+      <div class="edit-grid">
+
+        <div>
+          <section class="form-section">
+            <div class="sec-head"><div><h2>Basics</h2><div class="sec-sub">Slug, title, lede.</div></div></div>
+            <div class="form-grid">
+              <div class="field"><label>Slug</label><input type="text" value="raf-sp"><span class="hint">Used in URL: /raf-sp</span></div>
+              <div class="field"><label>Title</label><input type="text" value="RAF-SP"></div>
+              <div class="field full"><label>Lede</label><textarea rows="2">A scheduling and dispatch tool for a regional logistics fleet — built nights, shipped on a Tuesday.</textarea></div>
+              <div class="field"><label>Label</label><input type="text" value="Internal tool · 2024–25"></div>
+              <div class="field"><label>Meta</label><input type="text" value="Brick &amp; Bolt · 4 engineers"></div>
+              <div class="field full"><label>Description</label><textarea rows="3">Replaced a 14-tab spreadsheet with a single dispatch view. Used daily by 30+ coordinators.</textarea></div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="sec-head"><div><h2>Classification</h2><div class="sec-sub">Year, role, category, ordering.</div></div></div>
+            <div class="form-grid">
+              <div class="field"><label>Year</label><input type="text" value="2024"></div>
+              <div class="field"><label>Role</label><input type="text" value="Lead engineer"></div>
+              <div class="field"><label>Category</label>
+                <select>
+                  <option>Internal tool</option><option>Fintech</option><option>Health</option><option>Mapping</option><option>Productivity</option><option>Infra</option><option>Education</option><option>Dev tool</option><option>Logistics</option><option>Misc</option>
+                </select>
+              </div>
+              <div class="field"><label>Order</label><input type="number" value="1"></div>
+              <div class="field full">
+                <label>Tech stack (comma-separated)</label>
+                <input type="text" value="Next.js, Postgres, Sanity, Tailwind, Cloudflare">
+                <div class="tag-list">
+                  <span class="tg">Next.js <span class="x">×</span></span>
+                  <span class="tg">Postgres <span class="x">×</span></span>
+                  <span class="tg">Sanity <span class="x">×</span></span>
+                  <span class="tg">Tailwind <span class="x">×</span></span>
+                  <span class="tg">Cloudflare <span class="x">×</span></span>
+                </div>
+              </div>
+              <div class="field full">
+                <label>Tags (comma-separated)</label>
+                <input type="text" value="logistics, dispatch, internal, b2b">
+                <div class="tag-list">
+                  <span class="tg">logistics <span class="x">×</span></span>
+                  <span class="tg">dispatch <span class="x">×</span></span>
+                  <span class="tg">internal <span class="x">×</span></span>
+                  <span class="tg">b2b <span class="x">×</span></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="sec-head"><div><h2>Cover image</h2><div class="sec-sub">Shown on /projects and as social card.</div></div></div>
+            <div class="form-grid">
+              <div class="field full">
+                <label>Cover image URL</label>
+                <input type="text" value="/covers/raf-sp.png">
+              </div>
+              <div class="field full">
+                <label>Alt text</label>
+                <input type="text" value="A dispatch board with rows of trips colored by status">
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <aside class="aside-panel">
+          <h3>Publication</h3>
+          <div class="meta-row"><span class="k">Status</span><span class="v"><span class="pill ok">Published</span></span></div>
+          <div class="meta-row"><span class="k">Created</span><span class="v">28 Apr 2024</span></div>
+          <div class="meta-row"><span class="k">Updated</span><span class="v">5 May 2026</span></div>
+          <div class="meta-row"><span class="k">URL</span><span class="v" style="font-family:var(--mono);font-size:11px">/raf-sp</span></div>
+          <div class="meta-row"><span class="k">Visible</span><span class="v"><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></span></div>
+
+          <div class="danger-zone">
+            <h3 style="color:#c97a72">Danger zone</h3>
+            <button class="btn danger" style="width:100%;justify-content:center">Delete project</button>
+          </div>
+        </aside>
+
+      </div>
+
+      <div class="action-bar">
+        <div class="status"><span class="dot saved"></span>All changes saved</div>
+        <div class="right">
+          <a href="projects-manager.html" class="btn">Cancel</a>
+          <button class="btn" id="draft">Save as draft</button>
+          <button class="btn primary" id="publish">Publish</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+const status = document.querySelector('.action-bar .status');
+const dot = status.querySelector('.dot');
+const txt = status.lastChild;
+let dirty = false;
+document.querySelectorAll('input, textarea, select').forEach(i => i.addEventListener('input', () => {
+  dirty = true; dot.className = 'dot dirty'; txt.textContent = ' Unsaved changes';
+}));
+document.getElementById('draft').addEventListener('click', () => {
+  dirty = false; dot.className = 'dot saved'; txt.textContent = ' All changes saved';
+  window.toast('ok', 'Draft saved', 'This won\u2019t affect the live site.');
+});
+document.getElementById('publish').addEventListener('click', () => {
+  dirty = false; dot.className = 'dot saved'; txt.textContent = ' All changes saved';
+  window.toast('ok', 'Published', 'Changes are live on the site.');
+});
+</script>
+
+</body>
+</html>

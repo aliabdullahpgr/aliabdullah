@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migrating a blog system to Sanity without breaking SEO — Ali Abdullah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span><b>ali abdullah</b><span>&nbsp;/ swe</span></a>
+    <div class="nav-links">
+      <a href="chat.html">Chat</a>
+      <a href="projects.html">Work</a>
+      <a href="writing.html" class="active">Writing</a>
+    </div>
+  </div>
+</nav>
+
+<section class="article-head">
+  <div class="wrap">
+    <div class="crumb">
+      <a href="writing.html">← Writing</a>
+      <span class="sep">/</span>
+      <span>Engineering</span>
+    </div>
+    <h1>Migrating a blog system to Sanity without breaking SEO</h1>
+    <p class="lede">Two years of posts, three CMSes, one rewrite. Here's how I moved everything to Sanity in a weekend without dropping a single ranking.</p>
+    <div class="article-meta">
+      <span>2026 · 04 · 22</span>
+      <span class="sep">/</span>
+      <span>9 min read</span>
+      <span class="sep">/</span>
+      <span class="accent">Engineering</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap article">
+
+    <div class="aside-box">
+      <div class="tag-line">TL;DR</div>
+      <p>Pre-build a complete URL inventory, mirror it 1:1 in the new CMS, swap DNS only after verifying every redirect with a script. Don't trust your sitemap — trust your access logs.</p>
+    </div>
+
+    <p>The first time I migrated a blog, I lost half the traffic for a month. I wrote about it as a public failure on day three of the dip — and then quietly fixed it on day twelve. That post is still up. This one is the version I wish I'd had then.</p>
+
+    <p>I was moving <b>VieroMind's</b> blog from a hand-rolled MDX setup to Sanity. The brief from the team was unromantic: "Don't break anything, and let editors stop opening pull requests." Two-line briefs are usually the hardest ones.</p>
+
+    <h2>The actual problem</h2>
+
+    <p>SEO migrations fail in three places, and they're all boring:</p>
+
+    <ol>
+      <li>URLs change shape, even slightly, and old ones 404.</li>
+      <li>Metadata gets re-rendered with subtle differences — title length, OG image dimensions, missing canonical tags.</li>
+      <li>Internal links still point at the old URLs because nobody updated them.</li>
+    </ol>
+
+    <p>Each one is fixable in isolation. Together, they're a slow-motion ranking drop you only notice in week three when the marketing person walks over.</p>
+
+    <h2>Step one: inventory before you migrate</h2>
+
+    <p>Before touching the CMS, I pulled three lists:</p>
+
+    <ul>
+      <li>Every URL the search console had impressions for in the last 12 months.</li>
+      <li>Every URL the access logs had a non-bot 2xx for, ditto.</li>
+      <li>Every URL the sitemap claimed existed.</li>
+    </ul>
+
+    <p>The union of those three is your real surface area. The sitemap alone always lies — old posts get unpublished, drafts leak in, redirect chains hide entire sections. <code>cat access.log | …</code> is the source of truth.</p>
+
+    <h3>Quick script</h3>
+
+    <pre data-lang="bash"><code>awk '$9 == 200 {print $7}' access.log \
+  | grep -E '^/blog/' \
+  | sort -u &gt; urls-real.txt</code></pre>
+
+    <p>That single command saved me about four hours of guessing. Run it before anything else.</p>
+
+    <h2>Step two: mirror, don't redesign</h2>
+
+    <blockquote>
+      A migration is not a redesign. A migration is not a redesign. A migration is not a redesign.
+    </blockquote>
+
+    <p>I wrote that on a sticky note and put it on my monitor. Every time I caught myself thinking "while we're in here, we could just…" I'd look at it. The temptation to clean up URL slugs, restructure categories, or "finally use proper canonical tags" is the single biggest source of post-migration pain.</p>
+
+    <p>The rule: <b>v1 is a 1:1 mirror.</b> Same URLs, same titles, same meta. Improvements ship in v1.1 — after the dust settles.</p>
+
+    <h2>Step three: redirects as code</h2>
+
+    <p>Even with a 1:1 mirror, you'll have a few changes — Sanity's slug rules differ slightly from the old setup, and some old posts had legacy URL prefixes I wanted to drop. I wrote a flat <code>redirects.json</code>, generated from a diff of the old and new URL sets:</p>
+
+    <pre data-lang="json"><code>[
+  { "from": "/posts/old-slug", "to": "/blog/old-slug",   "code": 301 },
+  { "from": "/blog/2023/10/x", "to": "/blog/x",          "code": 301 }
+]</code></pre>
+
+    <p>Then a tiny script in CI that, on every deploy, hits each <code>from</code> URL and asserts it terminates at the expected <code>to</code> with a single 301 hop. No redirect chains, ever.</p>
+
+    <h2>Step four: verify, don't trust</h2>
+
+    <p>Before swapping DNS I ran the full URL list through a checker that compared:</p>
+
+    <ul>
+      <li>Status code (must be 200 or a single 301 to a 200).</li>
+      <li><code>&lt;title&gt;</code> length and content.</li>
+      <li>Canonical URL.</li>
+      <li>OG image presence and dimensions.</li>
+    </ul>
+
+    <p>It found 14 mismatches. Twelve were trivial (title casing); two were genuine bugs in my Sanity portable-text renderer. I'd have shipped without noticing.</p>
+
+    <h2>What I'd do differently</h2>
+
+    <p>The migration itself was clean. The thing I'd change: I waited too long to involve the editorial team. They had small process needs — a "needs review" state, a way to schedule posts — that were trivial to add up front and a real pain to retrofit. Talk to your editors before you talk to your CMS.</p>
+
+    <hr>
+
+    <p>If you want the URL-checker script, it's <a href="#">on GitHub</a>. If you've done a similar migration and have war stories, <a href="mailto:aliabdullah3676@gmail.com">I'd genuinely love to hear them</a>.</p>
+
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="article-foot">
+    <div class="tags">
+      <span class="tag">Sanity</span>
+      <span class="tag">SEO</span>
+      <span class="tag">CMS</span>
+      <span class="tag">Migration</span>
+    </div>
+    <div class="share">
+      <a href="#">Share ↗</a>
+      <a href="#">Copy link</a>
+      <a href="writing.html">All posts →</a>
+    </div>
+  </div>
+</div>
+
+<nav class="detail-nav" aria-label="Article pagination">
+  <a class="prev" href="article.html">
+    <span class="dir">← Older</span>
+    <span class="name">Function calling, in plain English</span>
+  </a>
+  <a class="next" href="article.html">
+    <span class="dir">Newer →</span>
+    <span class="name">Reading a codebase for the first time</span>
+  </a>
+</nav>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="contact-pre">Contact</div>
+    <h2>Want to talk<br>about <a href="mailto:aliabdullah3676@gmail.com">tech&nbsp;→</a></h2>
+    <div class="contact-meta">
+      <div><span>Email</span><a href="mailto:aliabdullah3676@gmail.com">aliabdullah3676@gmail.com</a></div>
+      <div><span>GitHub</span><a href="#">github.com/aliabdullah</a></div>
+      <div><span>LinkedIn</span><a href="#">linkedin.com/in/aliabdullah</a></div>
+      <div><span>Location</span>Multan, Pakistan</div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span><span class="available">●</span> Available for collaboration</span>
+  <span>© 2026 — built lean</span>
+</footer>
+
+</body>
+</html>

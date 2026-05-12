@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings — Portfolio CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html">Site content <span class="badge">⌘2</span></a>
+    </nav>
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html">Chat <span class="badge"></span></a>
+    </nav>
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html">Users <span class="badge">3</span></a>
+      <a href="settings.html" class="active">Settings <span class="badge"></span></a>
+    </nav>
+    <div class="a-foot"><span>v 1.0</span><a href="index.html" target="_blank" rel="noopener">View site ↗</a></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb"><a href="dashboard.html" style="color:var(--muted);text-decoration:none">Dashboard</a><span class="sep">/</span><b>Settings</b></div>
+      <div class="right">
+        <span class="live"><a href="index.html" target="_blank" rel="noopener">Live · ali.abdullah ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn"><span class="av">AA</span><span class="nm">Ali</span><span class="ch">▾</span></button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Settings</h1>
+          <div class="h1-sub">Your account.</div>
+        </div>
+      </div>
+
+      <section class="form-section" style="max-width:780px">
+        <div class="profile-block">
+          <div class="big-av">AA</div>
+          <div class="meta">
+            <b>Ali Abdullah</b>
+            <span>OWNER · joined 03 Feb 2024</span>
+          </div>
+          <div class="actions">
+            <button class="btn">Change avatar</button>
+            <button class="btn danger sm">Remove</button>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field"><label>First name</label><input type="text" value="Ali"></div>
+          <div class="field"><label>Last name</label><input type="text" value="Abdullah"></div>
+          <div class="field full"><label>Email</label><input type="email" value="aliabdullah3676@gmail.com"></div>
+          <div class="field"><label>Display name</label><input type="text" value="Ali"></div>
+          <div class="field"><label>Timezone</label>
+            <select><option>Asia/Karachi (UTC+5)</option><option>UTC</option><option>America/New_York</option><option>Europe/London</option></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section" style="max-width:780px">
+        <div class="sec-head"><div><h2>Password</h2><div class="sec-sub">Last changed 4 months ago.</div></div></div>
+        <div class="form-grid">
+          <div class="field full"><label>Current password</label><input type="password" value="••••••••••"></div>
+          <div class="field"><label>New password</label><input type="password" placeholder="At least 8 characters"></div>
+          <div class="field"><label>Confirm new password</label><input type="password"></div>
+        </div>
+      </section>
+
+      <section class="form-section" style="max-width:780px">
+        <div class="sec-head"><div><h2>Connected accounts</h2><div class="sec-sub">OAuth providers linked to this account.</div></div></div>
+        <table class="tbl">
+          <tbody>
+            <tr>
+              <td style="width:40px"><span class="u-cell"><span class="av" style="background:var(--bg);font-size:14px">⌥</span></span></td>
+              <td class="title">GitHub</td>
+              <td class="mono" style="color:var(--muted)">aliabdullah</td>
+              <td><span class="pill ok">Connected</span></td>
+              <td class="row-actions" style="text-align:right"><a href="#" class="danger">Disconnect</a></td>
+            </tr>
+            <tr>
+              <td><span class="u-cell"><span class="av" style="background:var(--bg);font-size:14px">G</span></span></td>
+              <td class="title">Google</td>
+              <td class="mono" style="color:var(--dim)">not connected</td>
+              <td><span class="pill draft">—</span></td>
+              <td class="row-actions" style="text-align:right"><a href="#">Connect</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="form-section" style="max-width:780px">
+        <div class="sec-head"><div><h2 style="color:#c97a72">Delete account</h2><div class="sec-sub">Permanently deletes everything. There is no undo.</div></div></div>
+        <button class="btn danger">Delete my account</button>
+      </section>
+
+      <div class="action-bar" style="max-width:780px;margin-left:0;margin-right:auto">
+        <div class="status"><span class="dot saved"></span>All changes saved</div>
+        <div class="right">
+          <button class="btn">Discard</button>
+          <button class="btn primary" id="save">Save changes</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+const status = document.querySelector('.action-bar .status');
+const dot = status.querySelector('.dot');
+const txt = status.lastChild;
+document.querySelectorAll('input, select').forEach(i => i.addEventListener('input', () => {
+  dot.className = 'dot dirty'; txt.textContent = ' Unsaved changes';
+}));
+document.getElementById('save').addEventListener('click', () => {
+  dot.className = 'dot saved'; txt.textContent = ' All changes saved';
+  window.toast('ok', 'Saved', 'Profile updated.');
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat — Ali Abdullah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="dot"></span><b>ali abdullah</b><span>&nbsp;/ swe</span></a>
+    <div class="nav-links">
+      <a href="chat.html" class="active">Chat</a>
+      <a href="projects.html">Work</a>
+      <a href="writing.html">Writing</a>
+    </div>
+  </div>
+</nav>
+
+<main class="chat-page">
+  <div class="chat-shell">
+
+    <div class="thread" id="thread">
+      <div class="intro">
+        <div class="hint">Try one of these</div>
+        <div class="suggest" id="suggest">
+          <button data-q="What is Ali working on right now?"><span>What is Ali working on right now?</span><span class="kind">ask</span></button>
+          <button data-q="Walk me through RAF-SP — what was hard about it?"><span>Walk me through RAF-SP — what was hard about it?</span><span class="kind">ask</span></button>
+          <button data-q="What's his stack and how does he pick tools?"><span>What's his stack and how does he pick tools?</span><span class="kind">ask</span></button>
+          <button data-q="Is he open to new work?"><span>Is he open to new work?</span><span class="kind">ask</span></button>
+          <button data-tool="message" data-q="I want to send Ali a message."><span>Send Ali a message</span><span class="kind tool">tool</span></button>
+          <button data-tool="meeting" data-q="I want to schedule a 30-minute call."><span>Schedule a 30-minute call</span><span class="kind tool">tool</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="composer-wrap">
+      <form class="composer" id="composer">
+        <textarea id="input" placeholder="Ask anything…" rows="1" autocomplete="off"></textarea>
+        <button class="send" id="send" type="submit">Send →</button>
+      </form>
+      <div class="composer-meta">
+        <span><kbd>Enter</kbd> send · <kbd>⇧&nbsp;Enter</kbd> newline</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const SYSTEM = `You are an AI agent representing Ali Abdullah, a software engineer based in Multan, Pakistan. You speak about him in the third person ("Ali built…", "he works on…"). Be concise, direct, and a little dry — match the tone of his writing. No marketing fluff.
+
+About Ali:
+- BS Computer Science at MNS-University of Agriculture.
+- Currently building a scalable blogging platform at VieroMind on Next.js + Sanity.
+- Past work: RAF-SP (government agriculture platform unifying 15+ departments, React/Node/Mongo/SQL, in production), HisaabScore (AI alternative credit scoring on MERN), a Python function-calling agent on Gemini with sandboxed code execution and persistent memory.
+- Stack: TypeScript, React, Next.js, Node, Express, MongoDB, Postgres, Python, Docker.
+- Cares about clean interfaces, honest backend APIs, and AI tools that solve real problems.
+- Open to interesting collaboration — especially on developer tools, AI products, and civic-tech.
+
+If a user wants to *send Ali a message* or *schedule a call*, do not pretend to do it. Instead respond with EXACTLY this token on a line by itself: [[TOOL:message]] or [[TOOL:meeting]]. The UI will render the right form. Then add one short sentence after.
+
+Keep answers under 120 words unless asked for detail. Don't make up specifics you don't know — say "I'm not sure, you'd have to ask him directly".`;
+
+const thread = document.getElementById('thread');
+const intro = thread.querySelector('.intro');
+const composer = document.getElementById('composer');
+const input = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const history = [];
+
+function autosize(){
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 200) + 'px';
+}
+input.addEventListener('input', autosize);
+input.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    composer.requestSubmit();
+  }
+});
+
+function addMsg(role, text){
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const who = role === 'user' ? 'You' : 'Agent';
+  const safe = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const html = safe.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('');
+  div.innerHTML = `<div class="who">${who}</div><div class="body">${html}</div>`;
+  thread.appendChild(div);
+  return div;
+}
+
+function addThinking(){
+  const div = document.createElement('div');
+  div.className = 'msg agent';
+  div.innerHTML = `<div class="who">Agent</div><div class="body"><span class="thinking"><span></span><span></span><span></span></span></div>`;
+  thread.appendChild(div);
+  return div;
+}
+
+function renderTool(kind, hostMsg){
+  const card = document.createElement('div');
+  card.className = 'tool-card';
+  const isMeeting = kind === 'meeting';
+  card.innerHTML = `
+    <div class="tool-head">
+      <span>${isMeeting ? '◇ Tool — schedule_meeting' : '◇ Tool — send_message'}</span>
+      <span class="status">awaiting input</span>
+    </div>
+    <div class="tool-body">${isMeeting
+      ? "Pick a topic and I'll open a calendar invite draft addressed to Ali."
+      : "Write a short note. I'll deliver it to Ali's inbox."}</div>
+    <textarea placeholder="${isMeeting ? 'What is the call about? (e.g. freelance React project, 30 min next week)' : 'Your message — keep it brief.'}"></textarea>
+    <div class="tool-actions">
+      <button type="button" class="tool-btn primary">${isMeeting ? 'Open invite' : 'Send'}</button>
+      <button type="button" class="tool-btn cancel">Cancel</button>
+    </div>`;
+  hostMsg.querySelector('.body').appendChild(card);
+
+  const ta = card.querySelector('textarea');
+  setTimeout(() => ta.focus(), 50);
+  card.querySelector('.cancel').addEventListener('click', () => {
+    card.querySelector('.status').textContent = 'cancelled';
+    card.querySelector('textarea').disabled = true;
+    card.querySelectorAll('.tool-btn').forEach(b => b.disabled = true);
+  });
+  card.querySelector('.primary').addEventListener('click', () => {
+    const v = ta.value.trim();
+    if(!v) { ta.focus(); return; }
+    const subject = isMeeting ? '30-min call' : 'Hello from your site';
+    const url = `mailto:aliabdullah3676@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(v)}`;
+    window.location.href = url;
+    card.querySelector('.status').textContent = 'sent → mail client';
+    ta.disabled = true;
+    card.querySelectorAll('.tool-btn').forEach(b => b.disabled = true);
+  });
+}
+
+async function ask(q, toolHint){
+  if(intro && intro.parentNode) intro.remove();
+  addMsg('user', q);
+  history.push({role:'user', content:q});
+  const thinkEl = addThinking();
+  sendBtn.disabled = true;
+
+  try{
+    const reply = await window.claude.complete({
+      messages: [{role:'system', content:SYSTEM}, ...history]
+    });
+    thinkEl.remove();
+
+    let toolMatch = reply.match(/\[\[TOOL:(message|meeting)\]\]/);
+    if(toolHint) toolMatch = toolMatch || [null, toolHint];
+    const cleaned = reply.replace(/\[\[TOOL:(message|meeting)\]\]/g, '').trim();
+
+    const msgEl = addMsg('agent', cleaned || (toolMatch ? "Sure — fill this in:" : ""));
+    history.push({role:'assistant', content: reply});
+
+    if(toolMatch){
+      renderTool(toolMatch[1], msgEl);
+    }
+  }catch(err){
+    thinkEl.remove();
+    addMsg('agent', "Something went wrong reaching the model. Try again, or email Ali directly at aliabdullah3676@gmail.com.");
+    console.error(err);
+  }finally{
+    sendBtn.disabled = false;
+    input.focus();
+  }
+}
+
+composer.addEventListener('submit', e => {
+  e.preventDefault();
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = '';
+  autosize();
+  ask(q);
+});
+
+document.getElementById('suggest').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const q = btn.dataset.q;
+  const tool = btn.dataset.tool || null;
+  ask(q, tool);
+});
+</script>
+
+</body>
+</html>

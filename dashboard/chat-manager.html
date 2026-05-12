@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat — Portfolio CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html">Site content <span class="badge">⌘2</span></a>
+    </nav>
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html" class="active">Chat <span class="badge"></span></a>
+    </nav>
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html">Users <span class="badge">3</span></a>
+      <a href="settings.html">Settings <span class="badge"></span></a>
+    </nav>
+    <div class="a-foot"><span>v 1.0</span><a href="index.html" target="_blank" rel="noopener">View site ↗</a></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb"><a href="dashboard.html" style="color:var(--muted);text-decoration:none">Dashboard</a><span class="sep">/</span><b>Chat</b></div>
+      <div class="right">
+        <span class="live"><a href="chat.html" target="_blank" rel="noopener">Live · /chat ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn"><span class="av">AA</span><span class="nm">Ali</span><span class="ch">▾</span></button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Chat agent</h1>
+          <div class="h1-sub">Tune suggestions, keyword responses, and the system prompt.</div>
+        </div>
+      </div>
+
+      <nav class="tabs">
+        <a href="#sug" class="active" data-tab="sug">Suggestions <span class="ct">6</span></a>
+        <a href="#bot" data-tab="bot">Bot responses <span class="ct">8</span></a>
+        <a href="#cfg" data-tab="cfg">Page config</a>
+      </nav>
+
+      <!-- SUGGESTIONS -->
+      <div class="tab-pane" data-pane="sug">
+        <div class="toolbar">
+          <div class="left"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em">PRESET QUESTIONS SHOWN UNDER THE INPUT</span></div>
+          <div class="right"><button class="btn primary">+ New suggestion</button></div>
+        </div>
+        <section class="panel">
+          <table class="tbl">
+            <thead><tr><th style="width:50px">#</th><th>Question</th><th style="width:100px">Kind</th><th style="width:160px">Tool</th><th style="width:80px">Order</th><th style="width:90px">Active</th><th style="width:120px"></th></tr></thead>
+            <tbody>
+              <tr><td class="idx">01</td><td class="title">What are you working on right now?</td><td><span class="pill">Ask</span></td><td class="mono" style="color:var(--dim)">—</td><td class="mono">10</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">02</td><td class="title">Tell me about RAF-SP</td><td><span class="pill">Ask</span></td><td class="mono" style="color:var(--dim)">—</td><td class="mono">20</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">03</td><td class="title">Send Ali a message</td><td><span class="pill ok">Tool</span></td><td class="mono">send_message</td><td class="mono">30</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">04</td><td class="title">Schedule a 30-min intro call</td><td><span class="pill ok">Tool</span></td><td class="mono">schedule_meeting</td><td class="mono">40</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">05</td><td class="title">What's your tech stack?</td><td><span class="pill">Ask</span></td><td class="mono" style="color:var(--dim)">—</td><td class="mono">50</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">06</td><td class="title">Are you available for advisory?</td><td><span class="pill">Ask</span></td><td class="mono" style="color:var(--dim)">—</td><td class="mono">60</td><td><label class="toggle"><input type="checkbox"><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <!-- BOT RESPONSES -->
+      <div class="tab-pane" data-pane="bot" hidden>
+        <div class="toolbar">
+          <div class="left"><span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em">KEYWORD-MATCHED REPLIES BEFORE THE LLM RUNS</span></div>
+          <div class="right"><button class="btn primary">+ New response</button></div>
+        </div>
+        <section class="panel">
+          <table class="tbl">
+            <thead><tr><th style="width:50px">#</th><th style="width:160px">Trigger</th><th>Response</th><th style="width:80px">Order</th><th style="width:90px">Active</th><th style="width:120px"></th></tr></thead>
+            <tbody>
+              <tr><td class="idx">01</td><td class="kw">hire</td><td>I'm not actively job-hunting, but I take advisory engagements — happy to chat.</td><td class="mono">10</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">02</td><td class="kw">price | rate</td><td>Rates depend on scope. I usually start with a 30-min call to figure out fit.</td><td class="mono">20</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">03</td><td class="kw">resume | cv</td><td>The /work page is the closest thing I have. PDF is on request.</td><td class="mono">30</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">04</td><td class="kw">stack</td><td>TypeScript, Next.js, Postgres. Sanity for content. Cloudflare for everything else.</td><td class="mono">40</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">05</td><td class="kw">timezone | tz</td><td>Karachi, UTC+5. Most overlap with EU mornings and US late-evenings.</td><td class="mono">50</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">06</td><td class="kw">github</td><td>github.com/aliabdullah — most of my open work is there.</td><td class="mono">60</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">07</td><td class="kw">crypto | web3</td><td>Not interested. Sorry.</td><td class="mono">70</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+              <tr><td class="idx">08</td><td class="kw">company | brick</td><td>I'm at Brick &amp; Bolt. Long story, mostly happy.</td><td class="mono">80</td><td><label class="toggle"><input type="checkbox"><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <!-- PAGE CONFIG -->
+      <div class="tab-pane" data-pane="cfg" hidden>
+        <section class="form-section">
+          <div class="sec-head"><div><h2>Page settings</h2><div class="sec-sub">What appears at the top of /chat.</div></div><div class="sec-actions"><span class="field-saved">Saved 3 days ago</span></div></div>
+          <div class="form-grid">
+            <div class="field"><label>Page title</label><input type="text" value="Chat with Ali"></div>
+            <div class="field"><label>Model name display</label><input type="text" value="claude-haiku-4-5 · v2"></div>
+            <div class="field full"><label>Welcome blurb</label><textarea rows="2">Ask anything about my work, the stack I use, or how to get in touch. The agent has access to my project notes and a couple of tools.</textarea></div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <div class="sec-head"><div><h2>System prompt</h2><div class="sec-sub">Sent on every request. Keep it tight.</div></div></div>
+          <div class="field full">
+            <label>System prompt</label>
+            <textarea class="code" rows="14">You are a friendly, concise assistant on Ali Abdullah's personal site.
+
+GROUND RULES
+- You are NOT Ali. Always speak about Ali in third person.
+- If asked anything legal, financial, or medical → defer politely.
+- If unsure, say so. Don't fabricate project names.
+
+CONTEXT
+- Ali is a software engineer in Karachi, currently at Brick &amp; Bolt.
+- The site has /projects, /writing, /chat. Link there when relevant.
+
+TOOLS
+- send_message: collect a name + message, then call.
+- schedule_meeting: only when the user clearly wants a call.
+
+STYLE
+- Short paragraphs. No emoji.
+- Match the site's calm tone.</textarea>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <div class="sec-head"><div><h2>Limits</h2><div class="sec-sub">Per-visitor rate limits.</div></div></div>
+          <div class="form-grid">
+            <div class="field"><label>Messages per session</label><input type="number" value="20"></div>
+            <div class="field"><label>Tool calls per session</label><input type="number" value="3"></div>
+            <div class="field"><label>Max output tokens</label><input type="number" value="1024"></div>
+            <div class="field">
+              <label>Show "powered by" badge</label>
+              <label class="toggle" style="margin-top:8px"><input type="checkbox" checked><span class="track"></span><span class="lbl">Visible on /chat</span></label>
+            </div>
+          </div>
+        </section>
+
+        <div class="action-bar">
+          <div class="status"><span class="dot saved"></span>All changes saved</div>
+          <div class="right">
+            <button class="btn">Reset to defaults</button>
+            <button class="btn primary" id="savecfg">Save</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+document.querySelectorAll('.tabs a[data-tab]').forEach(t => t.addEventListener('click', e => {
+  e.preventDefault();
+  document.querySelectorAll('.tabs a[data-tab]').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.querySelectorAll('.tab-pane').forEach(p => p.hidden = (p.dataset.pane !== t.dataset.tab));
+}));
+const sc = document.getElementById('savecfg');
+if(sc) sc.addEventListener('click', () => window.toast('ok', 'Saved', '/chat is updated.'));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Users — Portfolio CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html">Site content <span class="badge">⌘2</span></a>
+    </nav>
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html">Chat <span class="badge"></span></a>
+    </nav>
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html" class="active">Users <span class="badge">3</span></a>
+      <a href="settings.html">Settings <span class="badge"></span></a>
+    </nav>
+    <div class="a-foot"><span>v 1.0</span><a href="index.html" target="_blank" rel="noopener">View site ↗</a></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb"><a href="dashboard.html" style="color:var(--muted);text-decoration:none">Dashboard</a><span class="sep">/</span><b>Users</b></div>
+      <div class="right">
+        <span class="live"><a href="index.html" target="_blank" rel="noopener">Live · ali.abdullah ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn"><span class="av">AA</span><span class="nm">Ali</span><span class="ch">▾</span></button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Users</h1>
+          <div class="h1-sub">3 accounts · 1 owner · 2 editors</div>
+        </div>
+        <button class="btn primary">+ Invite user</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="left">
+          <button class="filter-pill active">All <span style="color:var(--dim);margin-left:4px">3</span></button>
+          <button class="filter-pill">Verified <span style="color:var(--dim);margin-left:4px">2</span></button>
+          <button class="filter-pill">Pending <span style="color:var(--dim);margin-left:4px">1</span></button>
+        </div>
+        <div class="right">
+          <div class="search">
+            <span style="color:var(--dim);font-family:var(--mono);font-size:11px">⌕</span>
+            <input type="text" placeholder="Search by name or email…">
+            <span class="key">⌘K</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th style="width:130px">Status</th>
+              <th style="width:90px">Posts</th>
+              <th style="width:130px">Joined</th>
+              <th style="width:130px">Last seen</th>
+              <th style="width:80px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="u-cell"><span class="av accent">AA</span><div><div class="nm">Ali Abdullah</div><div class="role">Owner</div></div></div></td>
+              <td class="mono">aliabdullah3676@gmail.com</td>
+              <td><span class="pill ok">Verified</span></td>
+              <td class="mono">14</td>
+              <td class="mono">2024 · 02 · 03</td>
+              <td class="mono">just now</td>
+              <td class="row-actions"><a href="#">⋯</a></td>
+            </tr>
+            <tr>
+              <td><div class="u-cell"><span class="av">SM</span><div><div class="nm">Sara Malik</div><div class="role">Editor</div></div></div></td>
+              <td class="mono">sara@brickandbolt.dev</td>
+              <td><span class="pill ok">Verified</span></td>
+              <td class="mono">2</td>
+              <td class="mono">2025 · 11 · 14</td>
+              <td class="mono">2 days ago</td>
+              <td class="row-actions"><a href="#">⋯</a></td>
+            </tr>
+            <tr>
+              <td><div class="u-cell"><span class="av">UR</span><div><div class="nm">Umar Riaz</div><div class="role">Editor · invited</div></div></div></td>
+              <td class="mono">umar@example.com</td>
+              <td><span class="pill warn">Pending invite</span></td>
+              <td class="mono">0</td>
+              <td class="mono">2026 · 05 · 06</td>
+              <td class="mono" style="color:var(--dim)">never</td>
+              <td class="row-actions"><a href="#">⋯</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagi">
+          <span>Showing 1 – 3 of 3</span>
+          <div class="pgs">
+            <button disabled>← Prev</button>
+            <button class="active">1</button>
+            <button disabled>Next →</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-h">
+        <h2>Empty state preview</h2>
+        <div class="sub">Shown when no users match the filter</div>
+      </div>
+      <div class="empty">
+        <div class="glyph">— no results —</div>
+        <h3>No users found</h3>
+        <p>Try a different search term, or clear the filter to see everyone.</p>
+        <button class="btn">Clear filter</button>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+document.querySelectorAll('.filter-pill').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.filter-pill').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+}));
+</script>
+
+</body>
+</html>

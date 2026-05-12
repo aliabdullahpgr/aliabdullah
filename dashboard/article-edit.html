@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Migrating a blog system to Sanity — Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="writer">
+
+  <!-- Top bar — minimal, sticky -->
+  <header class="writer-bar">
+    <div class="left">
+      <a href="writing-manager.html" class="back">← Writing</a>
+      <div class="doc">
+        <span class="stat"><span class="dot" id="saveDot"></span><span id="saveTxt">Saved · just now</span></span>
+      </div>
+    </div>
+    <div class="right">
+      <div class="meter">
+        <span><b id="words">1,847</b> words</span>
+        <span><b id="readtime">8</b> min read</span>
+      </div>
+      <button class="icon-btn" id="zenBtn" title="Focus mode (⌘.)">◐</button>
+      <a href="#" class="btn">Preview</a>
+      <button class="btn">Save draft</button>
+      <button class="btn primary" id="publish">Publish</button>
+    </div>
+  </header>
+
+  <!-- Body: canvas + meta drawer -->
+  <div class="writer-body" id="body">
+
+    <main class="canvas">
+      <div class="canvas-inner">
+
+        <div class="lede-line">
+          <span>Engineering</span>
+          <span class="sep">·</span>
+          <span>10 May 2026</span>
+          <span class="sep">·</span>
+          <span>aliabdullah.dev/writing/migrating-a-blog-system-to-sanity</span>
+        </div>
+
+        <textarea class="ed-title" rows="1" placeholder="Title">Migrating a blog system to Sanity</textarea>
+
+        <textarea class="ed-lede" rows="1" placeholder="Write a short lede…">A four-week project to move twelve years of posts off a homegrown CMS. Schema design, content auditing, and what the migration script got wrong twice.</textarea>
+
+        <div class="ed-divider"></div>
+
+        <textarea class="ed-body" placeholder="Start writing…">## Why move at all
+
+The old CMS was a Rails monolith from 2013. It worked, but every typo correction needed a deploy, and the editor was a textarea I had hand-rolled when I was 22 and didn't know any better.
+
+Three things finally pushed me to migrate:
+
+- A typo in a post from 2019 that I couldn't fix without booting up a 3-year-old laptop with the right Ruby version
+- The team wanted to occasionally edit drafts, and I was the only one with deploy access
+- I started writing more, and friction matters
+
+## Picking Sanity
+
+I evaluated three options: Sanity, Contentful, and a homegrown PostgreSQL admin. Sanity won on schema portability and the GROQ query language. Contentful was fine but the pricing curve scared me. The homegrown admin would have taken the same four weeks plus another four to get past "barely usable."
+
+## Schema design
+
+Twelve years of posts had drifted into seven different shapes. Some had `cover_image`, some had `hero`, some had a markdown image embedded in the first line of the body. Step one: a Postgres query that grouped posts by which fields were populated.
+
+```sql
+SELECT
+  COUNT(*) AS n,
+  ARRAY_AGG(DISTINCT keys) AS shape
+FROM posts, jsonb_object_keys(metadata) AS keys
+GROUP BY metadata
+ORDER BY n DESC;
+```
+
+Seven shapes collapsed to three after a weekend of cleanup. Then I designed the Sanity schema around the most common shape, and wrote migration rules for the other two.
+
+## The migration script got two things wrong
+
+First, it converted timestamps using the server's local time instead of UTC — fine for posts from 2024, broken for everything before 2018 because the server had moved continents twice during that window. I caught this when a post from "December 2017" briefly appeared as "January 2018."
+
+Second, it didn't preserve the `slug` field for posts where I'd manually overridden the auto-generated one. Two posts ended up with new URLs. I noticed because Plausible showed two 404s the morning after I shipped, both from old Hacker News referrers.
+
+## What I'd do differently
+
+I should have run the migration twice — once into a staging dataset, then again into production after a 48-hour soak. I did the soak, but in the same Sanity project, which meant I had to write a one-off cleanup script to remove the staging documents before going live. That script took half a day and was the most stressful code I wrote during the whole project, because it operated on the only copy of my content that existed.
+
+Lesson: never run a destructive cleanup on the same data you're trying to keep safe.</textarea>
+
+        <div class="ed-tags-row">
+          <span>#</span>
+          <input type="text" value="cms, sanity, migration, postgres" placeholder="Add tags…">
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Right meta drawer -->
+    <aside class="meta-drawer" id="drawer">
+
+      <div class="group">
+        <h4>Status</h4>
+        <div class="item"><span class="k">Stage</span><span class="v"><span class="pill ok">Published</span></span></div>
+        <div class="item"><span class="k">Visibility</span><span class="v"><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></span></div>
+        <div class="item"><span class="k">Featured</span><span class="v"><label class="toggle"><input type="checkbox"><span class="track"></span></label></span></div>
+      </div>
+
+      <div class="group">
+        <h4>Article</h4>
+        <div class="field-mini"><label>Slug</label><input type="text" value="migrating-a-blog-system-to-sanity"></div>
+        <div class="field-mini"><label>Date</label><input type="date" value="2026-05-10"></div>
+        <div class="field-mini">
+          <label>Category</label>
+          <select>
+            <option>Engineering</option><option>AI</option><option>Database</option>
+            <option>Career</option><option>Process</option><option>Personal</option><option>Design</option>
+          </select>
+        </div>
+        <div class="field-mini"><label>Read time (override)</label><input type="text" value="8 min" placeholder="Auto-calculated"></div>
+      </div>
+
+      <div class="group">
+        <h4>Social card</h4>
+        <div class="field-mini"><label>OG image URL</label><input type="text" value="/og/migrating-blog-sanity.png"></div>
+        <div class="field-mini"><label>Description</label><textarea rows="2">A four-week project to move twelve years of posts off a homegrown CMS.</textarea></div>
+      </div>
+
+      <div class="group">
+        <h4>Stats</h4>
+        <div class="item"><span class="k">Words</span><span class="v mono" id="wordsMeta">1,847</span></div>
+        <div class="item"><span class="k">Characters</span><span class="v mono">11,423</span></div>
+        <div class="item"><span class="k">Reading time</span><span class="v mono">8 min</span></div>
+        <div class="item"><span class="k">Created</span><span class="v mono">10 May 2026</span></div>
+        <div class="item"><span class="k">Updated</span><span class="v mono">just now</span></div>
+      </div>
+
+      <div class="danger">
+        <button class="btn danger" style="width:100%;justify-content:center">Delete article</button>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- Format bar (always visible — not real selection-aware) -->
+  <div class="format-bar" id="fbar">
+    <button title="Heading 1"><b>H1</b></button>
+    <button title="Heading 2"><b>H2</b></button>
+    <button title="Bold"><b>B</b></button>
+    <button title="Italic"><i>I</i></button>
+    <button title="Link">↗</button>
+    <button title="Code">{ }</button>
+    <button title="Quote">"</button>
+    <button title="List">•</button>
+    <button title="Image">▢</button>
+  </div>
+
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+// auto-resize textareas
+function autosize(el){
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+document.querySelectorAll('.ed-title, .ed-lede, .ed-body').forEach(el => {
+  autosize(el);
+  el.addEventListener('input', () => autosize(el));
+});
+
+// dirty / save state
+const saveDot = document.getElementById('saveDot');
+const saveTxt = document.getElementById('saveTxt');
+let dirty = false, saveTimer = null;
+
+function markDirty(){
+  if(dirty) return;
+  dirty = true;
+  saveDot.classList.add('dirty');
+  saveTxt.textContent = 'Editing…';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    dirty = false;
+    saveDot.classList.remove('dirty');
+    saveTxt.textContent = 'Saved · just now';
+  }, 1400);
+}
+
+// word + reading time
+const wordsEl = document.getElementById('words');
+const readEl = document.getElementById('readtime');
+const wordsMeta = document.getElementById('wordsMeta');
+const body = document.querySelector('.ed-body');
+
+function updateMeter(){
+  const words = body.value.trim().split(/\\s+/).filter(Boolean).length;
+  const fmt = words.toLocaleString();
+  wordsEl.textContent = fmt;
+  wordsMeta.textContent = fmt;
+  readEl.textContent = Math.max(1, Math.round(words / 220));
+}
+updateMeter();
+
+document.querySelectorAll('input, textarea, select').forEach(el => {
+  el.addEventListener('input', () => {
+    markDirty();
+    if(el.classList.contains('ed-body')) updateMeter();
+  });
+});
+
+// zen / focus mode
+const zenBtn = document.getElementById('zenBtn');
+const writerBody = document.getElementById('body');
+const fbar = document.getElementById('fbar');
+let zen = false;
+
+function toggleZen(){
+  zen = !zen;
+  writerBody.classList.toggle('zen', zen);
+  zenBtn.classList.toggle('active', zen);
+  fbar.style.display = zen ? 'none' : 'flex';
+  if(zen) window.toast('ok', 'Focus mode', 'Press ⌘. or click the icon to exit.');
+}
+zenBtn.addEventListener('click', toggleZen);
+
+// keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if((e.metaKey || e.ctrlKey) && e.key === '.'){ e.preventDefault(); toggleZen(); }
+  if((e.metaKey || e.ctrlKey) && e.key === 's'){ e.preventDefault();
+    dirty = false; saveDot.classList.remove('dirty'); saveTxt.textContent = 'Saved · just now';
+    window.toast('ok', 'Saved', 'Draft committed.');
+  }
+});
+
+document.getElementById('publish').addEventListener('click', () => {
+  dirty = false; saveDot.classList.remove('dirty'); saveTxt.textContent = 'Published · just now';
+  window.toast('ok', 'Published', 'Article is live on /writing.');
+});
+</script>
+
+</body>
+</html>

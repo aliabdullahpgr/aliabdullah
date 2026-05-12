@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects — Portfolio CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html">Site content <span class="badge">⌘2</span></a>
+    </nav>
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html" class="active">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html">Chat <span class="badge"></span></a>
+    </nav>
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html">Users <span class="badge">3</span></a>
+      <a href="settings.html">Settings <span class="badge"></span></a>
+    </nav>
+    <div class="a-foot"><span>v 1.0</span><a href="index.html" target="_blank" rel="noopener">View site ↗</a></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb"><a href="dashboard.html" style="color:var(--muted);text-decoration:none">Dashboard</a><span class="sep">/</span><b>Projects</b></div>
+      <div class="right">
+        <span class="live"><a href="index.html" target="_blank" rel="noopener">Live · ali.abdullah ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn"><span class="av">AA</span><span class="nm">Ali</span><span class="ch">▾</span></button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Projects</h1>
+          <div class="h1-sub">11 total · 9 published · 2 in draft</div>
+        </div>
+        <a href="project-edit.html" class="btn primary">+ Add project</a>
+      </div>
+
+      <div class="toolbar">
+        <div class="left">
+          <button class="filter-pill active">All <span style="color:var(--dim);margin-left:4px">11</span></button>
+          <button class="filter-pill">Published <span style="color:var(--dim);margin-left:4px">9</span></button>
+          <button class="filter-pill">Drafts <span style="color:var(--dim);margin-left:4px">2</span></button>
+        </div>
+        <div class="right">
+          <div class="search">
+            <span style="color:var(--dim);font-family:var(--mono);font-size:11px">⌕</span>
+            <input type="text" placeholder="Search projects…">
+            <span class="key">⌘K</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:50px"></th>
+              <th>Title</th>
+              <th style="width:90px">Year</th>
+              <th>Category</th>
+              <th>Tech</th>
+              <th style="width:120px">Status</th>
+              <th style="width:120px">Updated</th>
+              <th style="width:140px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="idx">01</td>
+              <td class="title">RAF-SP</td>
+              <td class="mono">2025</td>
+              <td>Internal tool</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Next · Postgres · Sanity</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">5 May</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="raf-sp.html" target="_blank" rel="noopener">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">02</td>
+              <td class="title">HisaabScore</td>
+              <td class="mono">2024</td>
+              <td>Fintech</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">React · Rails · Stripe</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">28 Apr</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">03</td>
+              <td class="title">Pulse</td>
+              <td class="mono">2024</td>
+              <td>Health</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Swift · Vapor</td>
+              <td><span class="pill warn">Needs cover</span></td>
+              <td class="mono">3 Apr</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">04</td>
+              <td class="title">Margalla Trails</td>
+              <td class="mono">2024</td>
+              <td>Mapping</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Mapbox · Astro</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">18 Mar</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">05</td>
+              <td class="title">Loom Receipts</td>
+              <td class="mono">2023</td>
+              <td>Internal tool</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Go · Postgres · htmx</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">2023</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">06</td>
+              <td class="title">Quietnote</td>
+              <td class="mono">2023</td>
+              <td>Productivity</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">SwiftUI · CloudKit</td>
+              <td><span class="pill draft">Draft</span></td>
+              <td class="mono">14 Feb</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">07</td>
+              <td class="title">Stardust DNS</td>
+              <td class="mono">2022</td>
+              <td>Infra</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Rust · Cloudflare</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">2022</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">08</td>
+              <td class="title">Roznamcha</td>
+              <td class="mono">2022</td>
+              <td>Education</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Vue · Firebase</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">2022</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">09</td>
+              <td class="title">Nemo Editor</td>
+              <td class="mono">2021</td>
+              <td>Dev tool</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Electron · Tree-sitter</td>
+              <td><span class="pill draft">Draft</span></td>
+              <td class="mono">2021</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">10</td>
+              <td class="title">Karwan</td>
+              <td class="mono">2020</td>
+              <td>Logistics</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">Django · Postgres</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">2020</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+            <tr>
+              <td class="idx">11</td>
+              <td class="title">First commit</td>
+              <td class="mono">2019</td>
+              <td>Misc</td>
+              <td class="mono" style="color:var(--muted);font-size:11px">PHP</td>
+              <td><span class="pill ok">Published</span></td>
+              <td class="mono">2019</td>
+              <td class="row-actions"><a href="project-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagi">
+          <span>Showing 1 – 11 of 11</span>
+          <div class="pgs">
+            <button disabled>← Prev</button>
+            <button class="active">1</button>
+            <button disabled>Next →</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+document.querySelectorAll('.filter-pill').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.filter-pill').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+}));
+</script>
+
+</body>
+</html>

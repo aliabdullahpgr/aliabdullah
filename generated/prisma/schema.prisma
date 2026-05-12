@@ -1,0 +1,199 @@
+// Prisma schema for Better Auth + Portfolio CMS
+// learn more: https://better-auth.com/docs/concepts/database
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+// NOTE: When using mysql or sqlserver, uncomment the //@db.Text annotations in model Account below
+// Further reading:
+// https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Better Auth Models ───
+
+model User {
+  id            String    @id
+  name          String //@db.Text
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String? //@db.Text
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  posts         Post[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String? //@db.Text
+  userAgent String? //@db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String //@db.Text
+  providerId            String //@db.Text
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String? //@db.Text
+  refreshToken          String? //@db.Text
+  idToken               String? //@db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String? //@db.Text
+  password              String? //@db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String //@db.Text
+  value      String //@db.Text
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
+
+// ─── Legacy Post Model (keep for compatibility) ───
+
+model Post {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
+
+  @@index([name])
+}
+
+// ─── Portfolio CMS Models ───
+
+model SiteConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   @db.Text
+  type        String   @default("text") // text, html, markdown, json
+  description String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@map("site_config")
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  lede      String   @db.Text
+  label     String // e.g. "screenshot — dashboard"
+  meta      String // e.g. "2025 · Government"
+  desc      String   @db.Text
+  year      String
+  status    String   @default("In production")
+  role      String   @default("Full-stack")
+  stack     String[] // tags
+  category  String   @default("General")
+  tags      String[]
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sections ProjectSection[]
+
+  @@map("project")
+}
+
+model ProjectSection {
+  id        String   @id @default(cuid())
+  projectId String
+  order     Int      @default(0)
+  heading   String
+  content   String   @db.Text // HTML content
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_section")
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  lede      String   @db.Text
+  date      String // e.g. "2026 · 04 · 22"
+  readTime  String   @default("5 min read")
+  category  String   @default("Notes")
+  tags      String[]
+  content   String   @db.Text // HTML content
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("article")
+}
+
+model ChatSuggestion {
+  id        String   @id @default(cuid())
+  question  String
+  kind      String   @default("ask") // ask, tool
+  tool      String? // message, meeting
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("chat_suggestion")
+}
+
+model ChatResponse {
+  id        String   @id @default(cuid())
+  trigger   String // keyword or phrase to match
+  response  String   @db.Text
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("chat_response")
+}
+
+model ChatConfig {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  pageTitle    String   @default("Ask Ali anything")
+  modelName    String   @default("claude-3-5-sonnet")
+  systemPrompt String   @default("") @db.Text
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+
+  @@map("chat_config")
+}

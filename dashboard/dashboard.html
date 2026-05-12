@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Portfolio CMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ─────── Sidebar ─────── -->
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html" class="active">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html">Site content <span class="badge">⌘2</span></a>
+    </nav>
+
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html">Chat <span class="badge"></span></a>
+    </nav>
+
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html">Users <span class="badge">3</span></a>
+      <a href="settings.html">Settings <span class="badge"></span></a>
+    </nav>
+
+    <div class="a-foot">
+      <span>v 1.0</span>
+      <a href="index.html" target="_blank" rel="noopener">View site ↗</a>
+    </div>
+  </aside>
+
+  <!-- ─────── Main ─────── -->
+  <main class="main">
+
+    <header class="topbar">
+      <div class="crumb"><span>Dashboard</span><span class="sep">/</span><b>Overview</b></div>
+      <div class="right">
+        <span class="live"><a href="index.html" target="_blank" rel="noopener">Live · ali.abdullah ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn">
+            <span class="av">AA</span>
+            <span class="nm">Ali</span>
+            <span class="ch">▾</span>
+          </button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Welcome back, Ali.</h1>
+          <div class="h1-sub">Sun · 10 May 2026 · 14:22 PKT</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-row">
+        <div class="stat-cell">
+          <span class="k">Total visitors · 30d</span>
+          <span class="v">4,218</span>
+          <span class="delta">↑ 12.4% vs last 30d</span>
+        </div>
+        <div class="stat-cell">
+          <span class="k">Projects</span>
+          <span class="v">11</span>
+          <span class="delta">2 in draft · 9 published</span>
+        </div>
+        <div class="stat-cell">
+          <span class="k">Articles</span>
+          <span class="v">14</span>
+          <span class="delta">1 scheduled for May 14</span>
+        </div>
+        <div class="stat-cell">
+          <span class="k">Legacy posts</span>
+          <span class="v">37</span>
+          <span class="delta flat">migration paused</span>
+        </div>
+      </div>
+
+      <!-- Activity + Quick actions -->
+      <div class="dash-split">
+
+        <section class="panel">
+          <div class="panel-head">
+            <span>Recent activity</span>
+            <div class="right">
+              <a href="#">Filter</a>
+              <a href="#">View all →</a>
+            </div>
+          </div>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th style="width:130px">Date</th>
+                <th>Item</th>
+                <th>Action</th>
+                <th>Status</th>
+                <th style="width:120px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">2026 · 05 · 10</td>
+                <td class="title">Migrating a blog system to Sanity</td>
+                <td>Published</td>
+                <td><span class="pill ok">Live</span></td>
+                <td class="row-actions"><a href="#">View</a><a href="#">Edit</a></td>
+              </tr>
+              <tr>
+                <td class="mono">2026 · 05 · 09</td>
+                <td class="title">RAF-SP</td>
+                <td>Updated lede</td>
+                <td><span class="pill ok">Live</span></td>
+                <td class="row-actions"><a href="#">View</a><a href="#">Edit</a></td>
+              </tr>
+              <tr>
+                <td class="mono">2026 · 05 · 07</td>
+                <td class="title">Function calling, in plain English</td>
+                <td>Saved as draft</td>
+                <td><span class="pill draft">Draft</span></td>
+                <td class="row-actions"><a href="#">Edit</a></td>
+              </tr>
+              <tr>
+                <td class="mono">2026 · 05 · 04</td>
+                <td class="title">Hero tagline</td>
+                <td>Edited</td>
+                <td><span class="pill ok">Live</span></td>
+                <td class="row-actions"><a href="#">View</a></td>
+              </tr>
+              <tr>
+                <td class="mono">2026 · 05 · 02</td>
+                <td class="title">Chat — system prompt</td>
+                <td>Updated</td>
+                <td><span class="pill ok">Live</span></td>
+                <td class="row-actions"><a href="#">View</a><a href="#">Edit</a></td>
+              </tr>
+              <tr>
+                <td class="mono">2026 · 04 · 28</td>
+                <td class="title">Pulse</td>
+                <td>Created</td>
+                <td><span class="pill warn">Needs cover</span></td>
+                <td class="row-actions"><a href="#">Edit</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <aside class="panel">
+          <div class="panel-head"><span>Quick actions</span></div>
+          <div class="qa-list">
+            <a href="article-edit.html">
+              <div>
+                <div class="nm">New article</div>
+                <div class="ds">Draft a post in writing</div>
+              </div>
+              <span class="ar">→</span>
+            </a>
+            <a href="project-edit.html">
+              <div>
+                <div class="nm">New project</div>
+                <div class="ds">Add to the work archive</div>
+              </div>
+              <span class="ar">→</span>
+            </a>
+            <a href="site-content.html">
+              <div>
+                <div class="nm">Edit hero</div>
+                <div class="ds">Change tagline &amp; eyebrow</div>
+              </div>
+              <span class="ar">→</span>
+            </a>
+            <a href="chat-manager.html">
+              <div>
+                <div class="nm">Tune chat agent</div>
+                <div class="ds">System prompt &amp; suggestions</div>
+              </div>
+              <span class="ar">→</span>
+            </a>
+            <a href="users-manager.html">
+              <div>
+                <div class="nm">Invite editor</div>
+                <div class="ds">Add a collaborator</div>
+              </div>
+              <span class="ar">→</span>
+            </a>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+
+<script>
+// user menu
+const btn = document.getElementById('userBtn');
+const pop = document.getElementById('userPop');
+btn.addEventListener('click', e => {
+  e.stopPropagation();
+  pop.classList.toggle('open');
+});
+document.addEventListener('click', () => pop.classList.remove('open'));
+
+function toast(kind, headline, body){
+  const wrap = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast ' + (kind === 'err' ? 'err' : '');
+  t.innerHTML = `<div class="ic">${kind === 'err' ? '!' : '◆'}</div><div class="body"><b>${headline}</b><span>${body || ''}</span></div>`;
+  wrap.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 220); }, 3500);
+}
+
+document.getElementById('signout').addEventListener('click', () => {
+  toast('ok', 'Signed out', 'Returning to login…');
+  setTimeout(() => { window.location.href = 'login.html'; }, 700);
+});
+
+// keyboard shortcut — cmd+1 → overview
+document.addEventListener('keydown', e => {
+  if((e.metaKey || e.ctrlKey) && e.key === '1'){
+    e.preventDefault();
+    toast('ok', 'Already here', 'Overview is the active page.');
+  }
+});
+
+// announce stub for not-yet-built sections
+document.querySelectorAll('.a-nav a:not(.active), .qa-list a, .row-actions a, .panel-head .right a').forEach(a => {
+  a.addEventListener('click', e => {
+    if(a.getAttribute('href') === '#'){
+      e.preventDefault();
+      toast('ok', 'Coming next', 'This section isn\u2019t wired up yet.');
+    }
+  });
+});
+</script>
+
+</body>
+</html>

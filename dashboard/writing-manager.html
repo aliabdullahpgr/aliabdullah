@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing — Portfolio CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html">Site content <span class="badge">⌘2</span></a>
+    </nav>
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html" class="active">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html">Chat <span class="badge"></span></a>
+    </nav>
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html">Users <span class="badge">3</span></a>
+      <a href="settings.html">Settings <span class="badge"></span></a>
+    </nav>
+    <div class="a-foot"><span>v 1.0</span><a href="index.html" target="_blank" rel="noopener">View site ↗</a></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb"><a href="dashboard.html" style="color:var(--muted);text-decoration:none">Dashboard</a><span class="sep">/</span><b>Writing</b></div>
+      <div class="right">
+        <span class="live"><a href="writing.html" target="_blank" rel="noopener">Live · /writing ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn"><span class="av">AA</span><span class="nm">Ali</span><span class="ch">▾</span></button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Writing</h1>
+          <div class="h1-sub">14 articles · 12 published · 1 scheduled · 1 draft</div>
+        </div>
+        <a href="article-edit.html" class="btn primary">+ New article</a>
+      </div>
+
+      <div class="toolbar">
+        <div class="left">
+          <button class="filter-pill active">All <span style="color:var(--dim);margin-left:4px">14</span></button>
+          <button class="filter-pill">Published <span style="color:var(--dim);margin-left:4px">12</span></button>
+          <button class="filter-pill">Scheduled <span style="color:var(--dim);margin-left:4px">1</span></button>
+          <button class="filter-pill">Drafts <span style="color:var(--dim);margin-left:4px">1</span></button>
+        </div>
+        <div class="right">
+          <div class="search">
+            <span style="color:var(--dim);font-family:var(--mono);font-size:11px">⌕</span>
+            <input type="text" placeholder="Search articles…">
+            <span class="key">⌘K</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:50px"></th>
+              <th>Title</th>
+              <th style="width:130px">Date</th>
+              <th>Category</th>
+              <th style="width:90px">Read</th>
+              <th style="width:120px">Status</th>
+              <th style="width:140px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="idx">01</td><td class="title">Migrating a blog system to Sanity</td><td class="mono">2026 · 05 · 10</td><td>Engineering</td><td class="mono">8 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">02</td><td class="title">Function calling, in plain English</td><td class="mono">2026 · 05 · 14</td><td>AI</td><td class="mono">11 min</td><td><span class="pill warn">Scheduled</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">03</td><td class="title">The cost of a foreign key</td><td class="mono">2026 · 05 · 07</td><td>Database</td><td class="mono">6 min</td><td><span class="pill draft">Draft</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">04</td><td class="title">Notes on hiring an offshore team</td><td class="mono">2026 · 04 · 22</td><td>Career</td><td class="mono">9 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">05</td><td class="title">A small rant about timezones</td><td class="mono">2026 · 04 · 03</td><td>Engineering</td><td class="mono">5 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">06</td><td class="title">Reading old code as archeology</td><td class="mono">2026 · 03 · 18</td><td>Engineering</td><td class="mono">7 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">07</td><td class="title">Why I write postmortems by hand</td><td class="mono">2026 · 02 · 28</td><td>Process</td><td class="mono">4 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">08</td><td class="title">Karachi, on a working Tuesday</td><td class="mono">2026 · 02 · 10</td><td>Personal</td><td class="mono">3 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">09</td><td class="title">A primer on row-level security</td><td class="mono">2026 · 01 · 24</td><td>Database</td><td class="mono">12 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+            <tr><td class="idx">10</td><td class="title">Building a quiet portfolio</td><td class="mono">2025 · 12 · 19</td><td>Design</td><td class="mono">6 min</td><td><span class="pill ok">Published</span></td><td class="row-actions"><a href="article-edit.html">Edit</a><a href="#">View</a><a href="#" class="danger">Delete</a></td></tr>
+          </tbody>
+        </table>
+        <div class="pagi">
+          <span>Showing 1 – 10 of 14</span>
+          <div class="pgs">
+            <button disabled>← Prev</button>
+            <button class="active">1</button>
+            <button>2</button>
+            <button>Next →</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+document.querySelectorAll('.filter-pill').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.filter-pill').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+}));
+</script>
+
+</body>
+</html>

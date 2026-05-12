@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site content — Portfolio CMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="aside">
+    <div class="a-brand"><span class="dot"></span>Portfolio CMS</div>
+    <div class="a-section">Workspace</div>
+    <nav class="a-nav">
+      <a href="dashboard.html">Overview <span class="badge">⌘1</span></a>
+      <a href="site-content.html" class="active">Site content <span class="badge">⌘2</span></a>
+    </nav>
+    <div class="a-section">Content</div>
+    <nav class="a-nav">
+      <a href="projects-manager.html">Projects <span class="badge">11</span></a>
+      <a href="writing-manager.html">Writing <span class="badge">14</span></a>
+      <a href="chat-manager.html">Chat <span class="badge"></span></a>
+    </nav>
+    <div class="a-section">Account</div>
+    <nav class="a-nav">
+      <a href="users-manager.html">Users <span class="badge">3</span></a>
+      <a href="settings.html">Settings <span class="badge"></span></a>
+    </nav>
+    <div class="a-foot">
+      <span>v 1.0</span>
+      <a href="index.html" target="_blank" rel="noopener">View site ↗</a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div class="crumb"><a href="dashboard.html" style="color:var(--muted);text-decoration:none">Dashboard</a><span class="sep">/</span><b>Site content</b></div>
+      <div class="right">
+        <span class="live"><a href="index.html" target="_blank" rel="noopener">Live · ali.abdullah ↗</a></span>
+        <div class="user-menu">
+          <button class="user-btn" id="userBtn"><span class="av">AA</span><span class="nm">Ali</span><span class="ch">▾</span></button>
+          <div class="user-pop" id="userPop">
+            <div class="meta"><b>Ali Abdullah</b>aliabdullah3676@gmail.com</div>
+            <a href="settings.html">Profile &amp; settings</a>
+            <a href="#">Keyboard shortcuts</a>
+            <div class="sep"></div>
+            <button id="signout">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <div class="h1-row">
+        <div>
+          <h1 class="h1">Site content</h1>
+          <div class="h1-sub">Edit homepage copy. Changes go live immediately.</div>
+        </div>
+      </div>
+
+      <nav class="tabs">
+        <a href="#hero" class="active" data-tab="hero">Hero</a>
+        <a href="#about" data-tab="about">About</a>
+        <a href="#contact" data-tab="contact">Contact</a>
+        <a href="#footer" data-tab="footer">Footer</a>
+        <a href="#nav" data-tab="nav">Navigation</a>
+        <a href="#meta" data-tab="meta">Meta</a>
+      </nav>
+
+      <!-- HERO -->
+      <div class="tab-pane" data-pane="hero">
+        <section class="form-section">
+          <div class="sec-head">
+            <div>
+              <h2>Hero</h2>
+              <div class="sec-sub">The first thing visitors see. Tagline + emphasis word.</div>
+            </div>
+            <div class="sec-actions"><span class="field-saved">Saved 2 min ago</span></div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field full">
+              <label>Eyebrow</label>
+              <input type="text" value="Selected work · Karachi · since 2019">
+            </div>
+            <div class="field full">
+              <label>Tagline</label>
+              <textarea rows="3">I build calm, useful internal tools — most of them quiet, a few of them load-bearing.</textarea>
+              <span class="hint">Wrap the emphasis word in &lt;em&gt; tags.</span>
+            </div>
+            <div class="field">
+              <label>Emphasis word</label>
+              <input type="text" value="load-bearing">
+            </div>
+            <div class="field">
+              <label>Primary CTA label</label>
+              <input type="text" value="See work">
+            </div>
+            <div class="field">
+              <label>Primary CTA href</label>
+              <input type="text" value="#work">
+            </div>
+            <div class="field">
+              <label>Secondary CTA label</label>
+              <input type="text" value="Read the writing">
+            </div>
+            <div class="field-row full" style="grid-column:1/-1">
+              <div class="field" style="flex:1">
+                <label>Status line</label>
+                <input type="text" value="Currently at Brick & Bolt · Available for advisory">
+              </div>
+              <button class="btn primary" data-save>Save</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="tab-pane" data-pane="about" hidden>
+        <section class="form-section">
+          <div class="sec-head">
+            <div>
+              <h2>About</h2>
+              <div class="sec-sub">Bio, location, company, university, skills.</div>
+            </div>
+            <div class="sec-actions"><span class="field-saved">Saved 14 min ago</span></div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field"><label>First name</label><input type="text" value="Ali"></div>
+            <div class="field"><label>Last name</label><input type="text" value="Abdullah"></div>
+            <div class="field full">
+              <label>Bio</label>
+              <textarea rows="5">Software engineer focused on the unglamorous parts of the stack — auth, scheduling, billing pipelines, and the small admin tools that nobody screenshots but everyone depends on.</textarea>
+            </div>
+            <div class="field"><label>Location</label><input type="text" value="Karachi, PK"></div>
+            <div class="field"><label>Timezone</label><input type="text" value="Asia/Karachi (UTC+5)"></div>
+            <div class="field"><label>Company</label><input type="text" value="Brick &amp; Bolt"></div>
+            <div class="field"><label>Role</label><input type="text" value="Software Engineer"></div>
+            <div class="field"><label>University</label><input type="text" value="NUST, Islamabad"></div>
+            <div class="field"><label>Graduation year</label><input type="text" value="2022"></div>
+            <div class="field full">
+              <label>Skills (comma-separated)</label>
+              <input type="text" value="TypeScript, React, Node.js, Postgres, Sanity, Cloudflare, Tailwind, Figma">
+              <div class="tag-list">
+                <span class="tg">TypeScript <span class="x">×</span></span>
+                <span class="tg">React <span class="x">×</span></span>
+                <span class="tg">Node.js <span class="x">×</span></span>
+                <span class="tg">Postgres <span class="x">×</span></span>
+                <span class="tg">Sanity <span class="x">×</span></span>
+                <span class="tg">Cloudflare <span class="x">×</span></span>
+                <span class="tg">Tailwind <span class="x">×</span></span>
+                <span class="tg">Figma <span class="x">×</span></span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="tab-pane" data-pane="contact" hidden>
+        <section class="form-section">
+          <div class="sec-head">
+            <div><h2>Contact</h2><div class="sec-sub">Where people can reach you.</div></div>
+            <div class="sec-actions"><span class="field-saved">Saved an hour ago</span></div>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label>Email</label><input type="email" value="aliabdullah3676@gmail.com"></div>
+            <div class="field"><label>GitHub</label><input type="text" value="github.com/aliabdullah"></div>
+            <div class="field"><label>LinkedIn</label><input type="text" value="linkedin.com/in/aliabdullah"></div>
+            <div class="field"><label>Twitter / X</label><input type="text" value="x.com/aliabdullah"></div>
+            <div class="field full"><label>Booking link (Cal / Calendly)</label><input type="text" value="cal.com/aliabdullah/intro"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="tab-pane" data-pane="footer" hidden>
+        <section class="form-section">
+          <div class="sec-head"><div><h2>Footer</h2><div class="sec-sub">Availability + copyright.</div></div></div>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Availability status</label>
+              <textarea rows="2">Booking advisory engagements for Q3 2026. Two slots open.</textarea>
+            </div>
+            <div class="field"><label>Copyright line</label><input type="text" value="© 2026 Ali Abdullah"></div>
+            <div class="field">
+              <label>Show RSS link</label>
+              <label class="toggle" style="margin-top:8px"><input type="checkbox" checked><span class="track"></span><span class="lbl">Visible in footer</span></label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- NAV -->
+      <div class="tab-pane" data-pane="nav" hidden>
+        <section class="form-section">
+          <div class="sec-head"><div><h2>Navigation</h2><div class="sec-sub">Top-level links shown on every page.</div></div></div>
+          <table class="tbl" style="margin-bottom:16px">
+            <thead><tr><th style="width:60px">#</th><th>Label</th><th>Href</th><th style="width:100px">Active</th><th style="width:100px"></th></tr></thead>
+            <tbody>
+              <tr><td class="idx">01</td><td class="title">Chat</td><td class="mono">/chat</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Remove</a></td></tr>
+              <tr><td class="idx">02</td><td class="title">Work</td><td class="mono">/projects</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Remove</a></td></tr>
+              <tr><td class="idx">03</td><td class="title">Writing</td><td class="mono">/writing</td><td><label class="toggle"><input type="checkbox" checked><span class="track"></span></label></td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">Remove</a></td></tr>
+            </tbody>
+          </table>
+          <button class="btn">+ Add link</button>
+        </section>
+      </div>
+
+      <!-- META -->
+      <div class="tab-pane" data-pane="meta" hidden>
+        <section class="form-section">
+          <div class="sec-head"><div><h2>Meta &amp; SEO</h2><div class="sec-sub">Title, description, social card.</div></div></div>
+          <div class="form-grid">
+            <div class="field full"><label>Site title</label><input type="text" value="Ali Abdullah — Software Engineer"></div>
+            <div class="field full"><label>Meta description</label><textarea rows="3">Software engineer in Karachi. Building internal tools, scheduling systems, and the quiet infrastructure under modern apps.</textarea></div>
+            <div class="field"><label>Canonical URL</label><input type="text" value="https://aliabdullah.dev"></div>
+            <div class="field"><label>Default OG image</label><input type="text" value="/og.png"></div>
+            <div class="field"><label>Twitter handle</label><input type="text" value="@aliabdullah"></div>
+            <div class="field"><label>Theme color</label><input type="text" value="#0d1410"></div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <div class="sec-head"><div><h2>Custom config</h2><div class="sec-sub">Additional key/value pairs read by the runtime.</div></div></div>
+          <table class="tbl" style="margin-bottom:16px">
+            <thead><tr><th style="width:240px">Key</th><th>Value</th><th style="width:100px"></th></tr></thead>
+            <tbody>
+              <tr><td class="mono">analytics.provider</td><td class="mono">plausible</td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">×</a></td></tr>
+              <tr><td class="mono">chat.model</td><td class="mono">claude-haiku-4-5</td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">×</a></td></tr>
+              <tr><td class="mono">writing.featured_count</td><td class="mono">4</td><td class="row-actions"><a href="#">Edit</a><a href="#" class="danger">×</a></td></tr>
+            </tbody>
+          </table>
+          <button class="btn">+ Add key</button>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toasts"></div>
+<script src="dashboard-common.js"></script>
+<script>
+// tab switching
+document.querySelectorAll('.tabs a[data-tab]').forEach(t => {
+  t.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.tabs a[data-tab]').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(p => p.hidden = (p.dataset.pane !== t.dataset.tab));
+  });
+});
+
+// save buttons
+document.querySelectorAll('[data-save]').forEach(b => {
+  b.addEventListener('click', e => {
+    e.preventDefault();
+    window.toast('ok', 'Saved', 'Changes are live on the site.');
+  });
+});
+</script>
+
+</body>
+</html>
