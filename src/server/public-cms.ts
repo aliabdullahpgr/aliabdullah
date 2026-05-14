@@ -54,47 +54,35 @@ const defaultChatConfig: ChatConfig = {
   systemPrompt: "",
 };
 
-const errorDetails = (error: unknown) => ({
-  error: error instanceof Error ? error.message : String(error),
-  stack: error instanceof Error ? error.stack : undefined,
-});
-
 async function withPublicCms<T>(
-  label: string,
-  fallback: T,
   read: (api: PublicApi) => Promise<T>,
 ) {
-  try {
-    const { api } = await import("~/trpc/server");
-    return await read(api);
-  } catch (error) {
-    console.error(`[public-cms] ${label} failed`, errorDetails(error));
-    return fallback;
-  }
+  const { api } = await import("~/trpc/server");
+  return read(api);
 }
 
 export const getPublicSiteConfigs = (keys: string[]) =>
-  withPublicCms<SiteConfig[]>("site config", [], (api) =>
+  withPublicCms<SiteConfig[]>((api) =>
     api.siteConfig.getManyByKeys({ keys }),
   );
 
 export const getPublicProjects = () =>
-  withPublicCms<PublicProject[]>("projects", [], (api) => api.project.getAll());
+  withPublicCms<PublicProject[]>((api) => api.project.getAll());
 
 export const getPublicProjectBySlug = (slug: string) =>
-  withPublicCms<PublicProject | null>("project detail", null, (api) =>
+  withPublicCms<PublicProject | null>((api) =>
     api.project.getBySlug({ slug }),
   );
 
 export const getPublicArticles = () =>
-  withPublicCms<PublicArticle[]>("articles", [], (api) => api.article.getAll());
+  withPublicCms<PublicArticle[]>((api) => api.article.getAll());
 
 export const getPublicArticleBySlug = (slug: string) =>
-  withPublicCms<PublicArticle | null>("article detail", null, (api) =>
+  withPublicCms<PublicArticle | null>((api) =>
     api.article.getBySlug({ slug }),
   );
 
 export const getPublicChatConfig = () =>
-  withPublicCms<ChatConfig>("chat config", defaultChatConfig, (api) =>
-    api.chat.getConfig(),
+  withPublicCms<ChatConfig>((api) => api.chat.getConfig()).then(
+    (config) => config ?? defaultChatConfig,
   );

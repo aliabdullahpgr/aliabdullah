@@ -1,5 +1,6 @@
 "use client";
 
+import Image, { type ImageLoader } from "next/image";
 import { useState } from "react";
 
 interface User {
@@ -9,6 +10,8 @@ interface User {
   image?: string | null;
   createdAt?: Date | string;
 }
+
+const avatarLoader: ImageLoader = ({ src }) => src;
 
 export default function SettingsForm({ user }: { user: User }) {
   const [name, setName] = useState(user.name);
@@ -87,9 +90,13 @@ export default function SettingsForm({ user }: { user: User }) {
               }}
             >
               {user.image ? (
-                <img
+                <Image
+                  loader={avatarLoader}
+                  unoptimized
                   src={user.image}
                   alt=""
+                  width={48}
+                  height={48}
                   style={{
                     width: "48px",
                     height: "48px",

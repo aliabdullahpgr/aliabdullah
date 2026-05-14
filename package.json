@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "next build",
-    "check": "pnpm lint && pnpm typecheck",
+    "build:strict": "pnpm typecheck && pnpm lint && pnpm test:production && pnpm build",
+    "check": "pnpm typecheck && pnpm lint && pnpm test:production",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
@@ -18,10 +19,12 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "postinstall": "prisma generate",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
     "preview": "next build && next start",
     "start": "next start",
+    "test": "node --test tests/production-contract.test.mjs",
+    "test:production": "node --test tests/production-contract.test.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

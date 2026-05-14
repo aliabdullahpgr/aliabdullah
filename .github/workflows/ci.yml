@@ -46,7 +46,16 @@ jobs:
       - name: Run Linting
         run: pnpm lint
 
+      - name: Run Production Parity Tests
+        run: pnpm test:production
+
       - name: Run Production Build
         run: pnpm build
         env:
-          SKIP_ENV_VALIDATION: "1"
+          BETTER_AUTH_SECRET: "ci-build-secret-change-me-32-characters"
+          BETTER_AUTH_GITHUB_CLIENT_ID: "ci-github-client-id"
+          BETTER_AUTH_GITHUB_CLIENT_SECRET: "ci-github-client-secret"
+          BETTER_AUTH_URL: "http://localhost:3000"
+          UPSTASH_REDIS_REST_URL: "https://ci-upstash.example.com"
+          UPSTASH_REDIS_REST_TOKEN: "ci-upstash-token"
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"

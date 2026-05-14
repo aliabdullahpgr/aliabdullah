@@ -1,9 +1,12 @@
 "use client";
 
+import Image, { type ImageLoader } from "next/image";
 import { useState } from "react";
 import { api } from "~/trpc/react";
 
 type Filter = "all" | "verified" | "pending";
+
+const avatarLoader: ImageLoader = ({ src }) => src;
 
 export default function UsersTable() {
   const [search, setSearch] = useState("");
@@ -314,9 +317,13 @@ export default function UsersTable() {
                         }}
                       >
                         {user.image ? (
-                          <img
+                          <Image
+                            loader={avatarLoader}
+                            unoptimized
                             src={user.image}
                             alt=""
+                            width={28}
+                            height={28}
                             style={{
                               width: "28px",
                               height: "28px",
