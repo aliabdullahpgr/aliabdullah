@@ -1,6 +1,8 @@
 @import "tailwindcss" source(none);
 
-@source "../";
+@source "../app";
+@source "../components";
+@source "../lib";
 
 @theme {
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;

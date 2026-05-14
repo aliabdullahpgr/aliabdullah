@@ -8,8 +8,7 @@ import { api } from "~/trpc/server";
 export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  const articles = await api.article.getAll();
-  return articles.map((a) => ({ slug: a.slug }));
+  return [];
 }
 
 export async function generateMetadata({
