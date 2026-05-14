@@ -13,9 +13,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const article = await api.article.getBySlug({ slug: params.slug });
+  const { slug } = await params;
+  const article = await api.article.getBySlug({ slug });
   if (!article) return { title: "Not Found" };
   return { title: `${article.title} — Ali Abdullah` };
 }
@@ -23,9 +24,10 @@ export async function generateMetadata({
 export default async function ArticlePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const article = await api.article.getBySlug({ slug: params.slug });
+  const { slug } = await params;
+  const article = await api.article.getBySlug({ slug });
   if (!article) notFound();
 
   return (

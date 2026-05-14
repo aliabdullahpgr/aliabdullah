@@ -13,9 +13,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const project = await api.project.getBySlug({ slug: params.slug });
+  const { slug } = await params;
+  const project = await api.project.getBySlug({ slug });
   if (!project) return { title: "Not Found" };
   return { title: `${project.title} — Ali Abdullah` };
 }
@@ -23,9 +24,10 @@ export async function generateMetadata({
 export default async function ProjectPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const project = await api.project.getBySlug({ slug: params.slug });
+  const { slug } = await params;
+  const project = await api.project.getBySlug({ slug });
   if (!project) notFound();
 
   return (
