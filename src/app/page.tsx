@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { api } from "~/trpc/server";
 import { About } from "~/app/_components/about";
 import { Contact } from "~/app/_components/contact";

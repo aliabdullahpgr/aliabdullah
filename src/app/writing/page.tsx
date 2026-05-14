@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
