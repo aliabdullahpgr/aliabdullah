@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { Nav } from "~/app/_components/nav";
 import { ChatInterface } from "./_components/chat-interface";
 import { getPublicChatConfig } from "~/server/public-cms";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata = {
   title: "Chat — Ali Abdullah",
@@ -25,7 +26,9 @@ export default async function ChatPage() {
               <b>Model:</b> {config.modelName ?? "claude-3-5-sonnet"}
             </div>
           </div>
-          <ChatInterface />
+          <TRPCReactProvider>
+            <ChatInterface />
+          </TRPCReactProvider>
         </div>
       </main>
     </>

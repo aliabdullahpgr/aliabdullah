@@ -2,7 +2,6 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
-import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
   title: "Ali Abdullah — Software Engineer",
@@ -34,7 +33,7 @@ export default function RootLayout({
       className={`${ibmPlexSans.variable} ${ibmPlexMono.variable}`}
     >
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        {children}
       </body>
     </html>
   );

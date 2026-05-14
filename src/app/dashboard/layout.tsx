@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { authClient } from "~/server/better-auth/client";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
+import { TRPCReactProvider } from "~/trpc/react";
 
 const navSections = [
   {
@@ -358,7 +359,9 @@ export default function DashboardLayout({
         </header>
 
         {/* Page content */}
-        <div style={{ padding: "36px 32px 56px", flex: 1 }}>{children}</div>
+        <TRPCReactProvider>
+          <div style={{ padding: "36px 32px 56px", flex: 1 }}>{children}</div>
+        </TRPCReactProvider>
       </main>
     </div>
   );
