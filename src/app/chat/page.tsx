@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Nav } from "~/app/_components/nav";
 import { ChatInterface } from "./_components/chat-interface";
 import { getPublicChatConfig } from "~/server/public-cms";
