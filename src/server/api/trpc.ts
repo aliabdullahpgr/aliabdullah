@@ -11,7 +11,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { auth } from "~/server/better-auth";
+import type { Session } from "~/server/better-auth/config";
 import { db } from "~/server/db";
 import { rateLimitters } from "~/server/ratelimit";
 
@@ -30,7 +30,7 @@ import { rateLimitters } from "~/server/ratelimit";
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     db,
-    session: null as Awaited<ReturnType<typeof auth.api.getSession>>,
+    session: null as Session | null,
     ...opts,
   };
 };
@@ -147,6 +147,7 @@ export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(strictRateLimitMiddleware)
   .use(async ({ ctx, next }) => {
+    const { auth } = await import("~/server/better-auth");
     const session = await auth.api.getSession({
       headers: ctx.headers,
     });
