@@ -7,7 +7,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "build": "next build",
+    "build": "npx prisma generate && next build",
     "build:strict": "pnpm typecheck && pnpm lint && pnpm test:production && pnpm build",
     "check": "pnpm typecheck && pnpm lint && pnpm test:production",
     "db:generate": "prisma generate",
@@ -18,11 +18,10 @@
     "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
-    "postinstall": "npx prisma generate",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
     "preview": "next build && next start",
-    "start": "next start",
+    "start": "npx prisma migrate deploy && next start",
     "test": "node --test tests/production-contract.test.mjs",
     "test:production": "node --test tests/production-contract.test.mjs",
     "typecheck": "tsc --noEmit"
