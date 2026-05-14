@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build, Lint, and Typecheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Validate Prisma schema
+        run: pnpm prisma validate
+
+      - name: Run TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Run Linting
+        run: pnpm lint
+
+      - name: Run Production Build
+        run: pnpm build
+        env:
+          SKIP_ENV_VALIDATION: "1"
