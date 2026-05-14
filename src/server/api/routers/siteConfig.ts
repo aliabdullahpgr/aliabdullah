@@ -5,6 +5,7 @@ import {
   publicProcedure,
   adminProcedure,
 } from "~/server/api/trpc";
+import { createAuditLog } from "~/server/audit";
 
 export const siteConfigRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -35,7 +36,7 @@ export const siteConfigRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.siteConfig.upsert({
+      const config = await ctx.db.siteConfig.upsert({
         where: { key: input.key },
         update: {
           value: input.value,
@@ -49,11 +50,15 @@ export const siteConfigRouter = createTRPCRouter({
           description: input.description,
         },
       });
+      void createAuditLog(ctx.session.user.id, "update_or_create", "siteConfig", config.key, { type: config.type });
+      return config;
     }),
 
   delete: adminProcedure
     .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.siteConfig.delete({ where: { key: input.key } });
+      const config = await ctx.db.siteConfig.delete({ where: { key: input.key } });
+      void createAuditLog(ctx.session.user.id, "delete", "siteConfig", config.key);
+      return config;
     }),
 });

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure, adminProcedure } from "~/server/api/trpc";
+import { createAuditLog } from "~/server/audit";
 
 export const dashboardRouter = createTRPCRouter({
   getStats: adminProcedure.query(async ({ ctx }) => {
@@ -85,7 +86,9 @@ export const dashboardRouter = createTRPCRouter({
       if (ctx.session.user.id === input.id) {
         throw new Error("Cannot delete yourself");
       }
-      return ctx.db.user.delete({ where: { id: input.id } });
+      const user = await ctx.db.user.delete({ where: { id: input.id } });
+      void createAuditLog(ctx.session.user.id, "delete", "user", user.id);
+      return user;
     }),
 
   updateUser: adminProcedure
@@ -98,9 +101,12 @@ export const dashboardRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      return ctx.db.user.update({
+      const user = await ctx.db.user.update({
         where: { id },
         data,
       });
+      const changedFields = Object.keys(data).filter((k) => data[k as keyof typeof data] !== undefined);
+      void createAuditLog(ctx.session.user.id, "update", "user", user.id, { changedFields });
+      return user;
     }),
 });

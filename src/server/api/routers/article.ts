@@ -6,6 +6,7 @@ import {
   adminProcedure,
 } from "~/server/api/trpc";
 import sanitizeHtml from "sanitize-html";
+import { createAuditLog } from "~/server/audit";
 
 export const articleRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -59,7 +60,9 @@ export const articleRouter = createTRPCRouter({
           return frame.tag === "script" || frame.tag === "object" || frame.tag === "embed";
         },
       });
-      return ctx.db.article.create({ data: { ...input, content: safeContent } });
+      const article = await ctx.db.article.create({ data: { ...input, content: safeContent } });
+      void createAuditLog(ctx.session.user.id, "create", "article", article.id, { slug: article.slug });
+      return article;
     }),
 
   update: adminProcedure
@@ -88,12 +91,17 @@ export const articleRouter = createTRPCRouter({
             },
           })
         : undefined;
-      return ctx.db.article.update({ where: { id }, data: { ...data, ...(safeContent && { content: safeContent }) } });
+      const article = await ctx.db.article.update({ where: { id }, data: { ...data, ...(safeContent && { content: safeContent }) } });
+      const changedFields = Object.keys(data).filter((k) => data[k as keyof typeof data] !== undefined);
+      void createAuditLog(ctx.session.user.id, "update", "article", article.id, { changedFields });
+      return article;
     }),
 
   delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.article.delete({ where: { id: input.id } });
+      const article = await ctx.db.article.delete({ where: { id: input.id } });
+      void createAuditLog(ctx.session.user.id, "delete", "article", article.id);
+      return article;
     }),
 });

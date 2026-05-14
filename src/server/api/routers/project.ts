@@ -6,6 +6,7 @@ import {
   adminProcedure,
 } from "~/server/api/trpc";
 import sanitizeHtml from "sanitize-html";
+import { createAuditLog } from "~/server/audit";
 
 export const projectRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -51,7 +52,9 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.project.create({ data: input });
+      const project = await ctx.db.project.create({ data: input });
+      void createAuditLog(ctx.session.user.id, "create", "project", project.id, { slug: project.slug });
+      return project;
     }),
 
   update: adminProcedure
@@ -76,13 +79,18 @@ export const projectRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      return ctx.db.project.update({ where: { id }, data });
+      const project = await ctx.db.project.update({ where: { id }, data });
+      const changedFields = Object.keys(data).filter((k) => data[k as keyof typeof data] !== undefined);
+      void createAuditLog(ctx.session.user.id, "update", "project", project.id, { changedFields });
+      return project;
     }),
 
   delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.project.delete({ where: { id: input.id } });
+      const project = await ctx.db.project.delete({ where: { id: input.id } });
+      void createAuditLog(ctx.session.user.id, "delete", "project", project.id);
+      return project;
     }),
 
   // Sections
@@ -103,7 +111,9 @@ export const projectRouter = createTRPCRouter({
           return frame.tag === "script" || frame.tag === "object" || frame.tag === "embed";
         },
       });
-      return ctx.db.projectSection.create({ data: { ...input, content: safeContent } });
+      const section = await ctx.db.projectSection.create({ data: { ...input, content: safeContent } });
+      void createAuditLog(ctx.session.user.id, "create", "project_section", section.id, { projectId: section.projectId });
+      return section;
     }),
 
   updateSection: adminProcedure
@@ -126,15 +136,20 @@ export const projectRouter = createTRPCRouter({
             },
           })
         : undefined;
-      return ctx.db.projectSection.update({
+      const section = await ctx.db.projectSection.update({
         where: { id },
         data: { ...data, ...(safeContent && { content: safeContent }) },
       });
+      const changedFields = Object.keys(data).filter((k) => data[k as keyof typeof data] !== undefined);
+      void createAuditLog(ctx.session.user.id, "update", "project_section", section.id, { changedFields, projectId: section.projectId });
+      return section;
     }),
 
   deleteSection: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.projectSection.delete({ where: { id: input.id } });
+      const section = await ctx.db.projectSection.delete({ where: { id: input.id } });
+      void createAuditLog(ctx.session.user.id, "delete", "project_section", section.id, { projectId: section.projectId });
+      return section;
     }),
 });

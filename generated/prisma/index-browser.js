@@ -262,6 +262,18 @@ exports.Prisma.ChatConfigScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorUserId: 'actorUserId',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -290,7 +302,8 @@ exports.Prisma.ModelName = {
   Article: 'Article',
   ChatSuggestion: 'ChatSuggestion',
   ChatResponse: 'ChatResponse',
-  ChatConfig: 'ChatConfig'
+  ChatConfig: 'ChatConfig',
+  AuditLog: 'AuditLog'
 };
 
 /**

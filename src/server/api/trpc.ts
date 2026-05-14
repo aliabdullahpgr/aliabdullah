@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 
 import { auth } from "~/server/better-auth";
 import { db } from "~/server/db";
+import { rateLimitters } from "~/server/ratelimit";
 
 /**
  * 1. CONTEXT
@@ -102,6 +103,33 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   return result;
 });
 
+const getClientIp = (headers: Headers) => {
+  const forwardedFor = headers.get("x-forwarded-for");
+  const realIp = headers.get("x-real-ip");
+  if (forwardedFor) return forwardedFor.split(",")[0]?.trim() ?? "unknown";
+  if (realIp) return realIp.trim();
+  return "unknown";
+};
+
+const createRateLimitMiddleware = (limiter: typeof rateLimitters.public) =>
+  t.middleware(async ({ ctx, next }) => {
+    // Prefer authenticated user ID, fallback to IP
+    const identifier = ctx.session?.user?.id ?? getClientIp(ctx.headers);
+    const { success } = await limiter.limit(identifier);
+
+    if (!success) {
+      throw new TRPCError({
+        code: "TOO_MANY_REQUESTS",
+        message: "Rate limit exceeded. Please try again later.",
+      });
+    }
+
+    return next({ ctx });
+  });
+
+const publicRateLimitMiddleware = createRateLimitMiddleware(rateLimitters.public);
+const strictRateLimitMiddleware = createRateLimitMiddleware(rateLimitters.strict);
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -109,7 +137,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure.use(timingMiddleware).use(publicRateLimitMiddleware);
 
 /**
  * Protected (authenticated) procedure
@@ -121,6 +149,7 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  */
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
+  .use(strictRateLimitMiddleware)
   .use(({ ctx, next }) => {
     if (!ctx.session?.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -144,7 +173,7 @@ export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
     select: { role: true },
   });
 
-  if (!user || user.role !== "admin") {
+  if (user?.role !== "admin") {
     throw new TRPCError({ code: "FORBIDDEN", message: "Admin privileges required." });
   }
 

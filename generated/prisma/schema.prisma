@@ -18,16 +18,18 @@ datasource db {
 // ─── Better Auth Models ───
 
 model User {
-  id            String    @id
+  id            String     @id
   name          String //@db.Text
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean    @default(false)
   image         String? //@db.Text
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+  role          String     @default("user") // Added role for RBAC
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
   posts         Post[]
+  auditLogs     AuditLog[] // Tracks actions performed by this admin
 
   @@unique([email])
   @@map("user")
@@ -196,4 +198,24 @@ model ChatConfig {
   createdAt    DateTime @default(now())
 
   @@map("chat_config")
+}
+
+// ─── Security Models ───
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String
+  action      String // e.g. "update_article", "delete_user"
+  entityType  String // e.g. "article", "project"
+  entityId    String
+  metadata    String?  @db.Text // JSON string for changes/context
+  ipAddress   String?
+  userAgent   String?  @db.Text
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [actorUserId], references: [id], onDelete: Cascade)
+
+  @@index([actorUserId])
+  @@index([action])
+  @@map("audit_log")
 }
