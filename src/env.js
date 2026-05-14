@@ -60,10 +60,10 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
   },
   /**
-   * Allow skipping env validation only outside production. Production builds must fail when a
-   * required runtime variable is missing or malformed.
+   * Allow skipping env validation. This is necessary during the Docker build stage
+   * where environment variables are not available but Next.js tries to validate them.
    */
-  skipValidation: !isProduction && !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   /**
    * Makes it so that empty strings are treated as undefined. `SOME_VAR: z.string()` and
    * `SOME_VAR=''` will throw an error.
