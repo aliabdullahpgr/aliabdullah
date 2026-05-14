@@ -1,13 +1,13 @@
 import { Nav } from "~/app/_components/nav";
 import { ChatInterface } from "./_components/chat-interface";
-import { api } from "~/trpc/server";
+import { getPublicChatConfig } from "~/server/public-cms";
 
 export const metadata = {
   title: "Chat — Ali Abdullah",
 };
 
 export default async function ChatPage() {
-  const config = await api.chat.getConfig();
+  const config = await getPublicChatConfig();
 
   return (
     <>

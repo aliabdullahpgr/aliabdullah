@@ -20,6 +20,8 @@ export const env = createEnv({
         ? z.string()
         : z.string().optional(),
     BETTER_AUTH_URL: z.string().url().optional(),
+    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
     DATABASE_URL:
       process.env.NODE_ENV === "production"
         ? z.string().url()
@@ -48,6 +50,8 @@ export const env = createEnv({
     BETTER_AUTH_GITHUB_CLIENT_SECRET:
       process.env.BETTER_AUTH_GITHUB_CLIENT_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
   },

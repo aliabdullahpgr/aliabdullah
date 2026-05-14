@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { api } from "~/trpc/server";
+import { getPublicArticleBySlug } from "~/server/public-cms";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = await api.article.getBySlug({ slug });
+  const article = await getPublicArticleBySlug(slug);
   if (!article) return { title: "Not Found" };
   return { title: `${article.title} — Ali Abdullah` };
 }
@@ -28,7 +28,7 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = await api.article.getBySlug({ slug });
+  const article = await getPublicArticleBySlug(slug);
   if (!article) notFound();
 
   return (
@@ -57,7 +57,7 @@ export default async function ArticlePage({
       <section>
         <div
           className="wrap article"
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          dangerouslySetInnerHTML={{ __html: article.content ?? "" }}
         />
       </section>
 

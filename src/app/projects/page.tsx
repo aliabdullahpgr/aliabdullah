@@ -4,14 +4,14 @@ import Link from "next/link";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { api } from "~/trpc/server";
+import { getPublicProjects } from "~/server/public-cms";
 
 export const metadata = {
   title: "Projects — Ali Abdullah",
 };
 
 export default async function ProjectsPage() {
-  const projects = await api.project.getAll();
+  const projects = await getPublicProjects();
 
   // Group projects by year
   const grouped = projects.reduce(

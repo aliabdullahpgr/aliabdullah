@@ -4,14 +4,14 @@ import Link from "next/link";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { api } from "~/trpc/server";
+import { getPublicArticles } from "~/server/public-cms";
 
 export const metadata = {
   title: "Writing — Ali Abdullah",
 };
 
 export default async function WritingPage() {
-  const articles = await api.article.getAll();
+  const articles = await getPublicArticles();
 
   // Group by year from date string
   const grouped = articles.reduce(

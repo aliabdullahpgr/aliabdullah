@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { api } from "~/trpc/server";
+import { getPublicProjectBySlug } from "~/server/public-cms";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await api.project.getBySlug({ slug });
+  const project = await getPublicProjectBySlug(slug);
   if (!project) return { title: "Not Found" };
   return { title: `${project.title} — Ali Abdullah` };
 }
@@ -28,7 +28,7 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await api.project.getBySlug({ slug });
+  const project = await getPublicProjectBySlug(slug);
   if (!project) notFound();
 
   return (
@@ -76,13 +76,13 @@ export default async function ProjectPage({
 
       <section>
         <div className="wrap detail-body">
-          {project.sections.map((section) => (
+          {(project.sections ?? []).map((section) => (
             <div key={section.id}>
               <h2>{section.heading}</h2>
               <div dangerouslySetInnerHTML={{ __html: section.content }} />
             </div>
           ))}
-          {project.sections.length === 0 && (
+          {(project.sections ?? []).length === 0 && (
             <p className="text-muted-foreground">No detailed sections yet.</p>
           )}
         </div>
