@@ -132,3 +132,21 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+/**
+ * Admin procedure
+ *
+ * ONLY accessible to users with the 'admin' role.
+ */
+export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  const user = await ctx.db.user.findUnique({
+    where: { id: ctx.session.user.id },
+    select: { role: true },
+  });
+
+  if (!user || user.role !== "admin") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Admin privileges required." });
+  }
+
+  return next({ ctx });
+});

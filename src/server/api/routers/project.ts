@@ -3,7 +3,9 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
+  adminProcedure,
 } from "~/server/api/trpc";
+import sanitizeHtml from "sanitize-html";
 
 export const projectRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -13,7 +15,7 @@ export const projectRouter = createTRPCRouter({
     });
   }),
 
-  getAllAdmin: protectedProcedure.query(async ({ ctx }) => {
+  getAllAdmin: adminProcedure.query(async ({ ctx }) => {
     return ctx.db.project.findMany({
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
       include: { sections: { orderBy: { order: "asc" } } },
@@ -29,7 +31,7 @@ export const projectRouter = createTRPCRouter({
       });
     }),
 
-  create: protectedProcedure
+  create: adminProcedure
     .input(
       z.object({
         slug: z.string().min(1),
@@ -52,7 +54,7 @@ export const projectRouter = createTRPCRouter({
       return ctx.db.project.create({ data: input });
     }),
 
-  update: protectedProcedure
+  update: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -77,14 +79,14 @@ export const projectRouter = createTRPCRouter({
       return ctx.db.project.update({ where: { id }, data });
     }),
 
-  delete: protectedProcedure
+  delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.project.delete({ where: { id: input.id } });
     }),
 
   // Sections
-  createSection: protectedProcedure
+  createSection: adminProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -94,10 +96,17 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.projectSection.create({ data: input });
+      const safeContent = sanitizeHtml(input.content, {
+        allowedTags: false,
+        allowedAttributes: false,
+        exclusiveFilter: function (frame) {
+          return frame.tag === "script" || frame.tag === "object" || frame.tag === "embed";
+        },
+      });
+      return ctx.db.projectSection.create({ data: { ...input, content: safeContent } });
     }),
 
-  updateSection: protectedProcedure
+  updateSection: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -107,11 +116,23 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, ...data } = input;
-      return ctx.db.projectSection.update({ where: { id }, data });
+      const { id, content, ...data } = input;
+      const safeContent = content
+        ? sanitizeHtml(content, {
+            allowedTags: false,
+            allowedAttributes: false,
+            exclusiveFilter: function (frame) {
+              return frame.tag === "script" || frame.tag === "object" || frame.tag === "embed";
+            },
+          })
+        : undefined;
+      return ctx.db.projectSection.update({
+        where: { id },
+        data: { ...data, ...(safeContent && { content: safeContent }) },
+      });
     }),
 
-  deleteSection: protectedProcedure
+  deleteSection: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.projectSection.delete({ where: { id: input.id } });

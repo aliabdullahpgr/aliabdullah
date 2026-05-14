@@ -3,6 +3,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
+  adminProcedure,
 } from "~/server/api/trpc";
 
 export const siteConfigRouter = createTRPCRouter({
@@ -24,7 +25,7 @@ export const siteConfigRouter = createTRPCRouter({
       });
     }),
 
-  set: protectedProcedure
+  set: adminProcedure
     .input(
       z.object({
         key: z.string(),
@@ -50,7 +51,7 @@ export const siteConfigRouter = createTRPCRouter({
       });
     }),
 
-  delete: protectedProcedure
+  delete: adminProcedure
     .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.siteConfig.delete({ where: { key: input.key } });

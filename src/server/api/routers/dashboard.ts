@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, adminProcedure } from "~/server/api/trpc";
 
 export const dashboardRouter = createTRPCRouter({
-  getStats: protectedProcedure.query(async ({ ctx }) => {
+  getStats: adminProcedure.query(async ({ ctx }) => {
     const [totalUsers, totalPosts, totalProjects, totalArticles] =
       await Promise.all([
         ctx.db.user.count(),
@@ -21,7 +21,7 @@ export const dashboardRouter = createTRPCRouter({
     };
   }),
 
-  getRecentPosts: protectedProcedure
+  getRecentPosts: adminProcedure
     .input(z.object({ limit: z.number().min(1).max(50).default(10) }))
     .query(async ({ ctx, input }) => {
       return ctx.db.post.findMany({
@@ -35,7 +35,7 @@ export const dashboardRouter = createTRPCRouter({
       });
     }),
 
-  getUsers: protectedProcedure
+  getUsers: adminProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(10),
@@ -79,13 +79,16 @@ export const dashboardRouter = createTRPCRouter({
       return { users, total };
     }),
 
-  deleteUser: protectedProcedure
+  deleteUser: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      if (ctx.session.user.id === input.id) {
+        throw new Error("Cannot delete yourself");
+      }
       return ctx.db.user.delete({ where: { id: input.id } });
     }),
 
-  updateUser: protectedProcedure
+  updateUser: adminProcedure
     .input(
       z.object({
         id: z.string(),

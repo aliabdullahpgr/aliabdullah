@@ -3,7 +3,9 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
+  adminProcedure,
 } from "~/server/api/trpc";
+import sanitizeHtml from "sanitize-html";
 
 export const articleRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -13,7 +15,7 @@ export const articleRouter = createTRPCRouter({
     });
   }),
 
-  getAllAdmin: protectedProcedure.query(async ({ ctx }) => {
+  getAllAdmin: adminProcedure.query(async ({ ctx }) => {
     return ctx.db.article.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -27,7 +29,7 @@ export const articleRouter = createTRPCRouter({
       });
     }),
 
-  getById: protectedProcedure
+  getById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.db.article.findUnique({
@@ -35,7 +37,7 @@ export const articleRouter = createTRPCRouter({
       });
     }),
 
-  create: protectedProcedure
+  create: adminProcedure
     .input(
       z.object({
         slug: z.string().min(1),
@@ -50,10 +52,17 @@ export const articleRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.article.create({ data: input });
+      const safeContent = sanitizeHtml(input.content, {
+        allowedTags: false,
+        allowedAttributes: false,
+        exclusiveFilter: function (frame) {
+          return frame.tag === "script" || frame.tag === "object" || frame.tag === "embed";
+        },
+      });
+      return ctx.db.article.create({ data: { ...input, content: safeContent } });
     }),
 
-  update: protectedProcedure
+  update: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -69,11 +78,20 @@ export const articleRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, ...data } = input;
-      return ctx.db.article.update({ where: { id }, data });
+      const { id, content, ...data } = input;
+      const safeContent = content
+        ? sanitizeHtml(content, {
+            allowedTags: false,
+            allowedAttributes: false,
+            exclusiveFilter: function (frame) {
+              return frame.tag === "script" || frame.tag === "object" || frame.tag === "embed";
+            },
+          })
+        : undefined;
+      return ctx.db.article.update({ where: { id }, data: { ...data, ...(safeContent && { content: safeContent }) } });
     }),
 
-  delete: protectedProcedure
+  delete: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.article.delete({ where: { id: input.id } });
