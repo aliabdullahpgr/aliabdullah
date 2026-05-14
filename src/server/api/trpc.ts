@@ -28,12 +28,9 @@ import { rateLimitters } from "~/server/ratelimit";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await auth.api.getSession({
-    headers: opts.headers,
-  });
   return {
     db,
-    session,
+    session: null as Awaited<ReturnType<typeof auth.api.getSession>>,
     ...opts,
   };
 };
@@ -113,8 +110,7 @@ const getClientIp = (headers: Headers) => {
 
 const createRateLimitMiddleware = (limiter: typeof rateLimitters.public) =>
   t.middleware(async ({ ctx, next }) => {
-    // Prefer authenticated user ID, fallback to IP
-    const identifier = ctx.session?.user?.id ?? getClientIp(ctx.headers);
+    const identifier = getClientIp(ctx.headers);
     const { success } = await limiter.limit(identifier);
 
     if (!success) {
@@ -150,14 +146,18 @@ export const publicProcedure = t.procedure.use(timingMiddleware).use(publicRateL
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(strictRateLimitMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
+  .use(async ({ ctx, next }) => {
+    const session = await auth.api.getSession({
+      headers: ctx.headers,
+    });
+
+    if (!session?.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
+
     return next({
       ctx: {
-        // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
+        session: { ...session, user: session.user },
       },
     });
   });
