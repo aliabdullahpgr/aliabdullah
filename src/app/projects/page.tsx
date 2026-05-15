@@ -1,18 +1,14 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { getPublicProjects } from "~/server/public-cms";
+import { projects } from "~/app/_data/public-content";
 
 export const metadata = {
   title: "Projects — Ali Abdullah",
 };
 
-export default async function ProjectsPage() {
-  const projects = await getPublicProjects();
-
+export default function ProjectsPage() {
   // Group projects by year
   const grouped = projects.reduce(
     (acc, project) => {

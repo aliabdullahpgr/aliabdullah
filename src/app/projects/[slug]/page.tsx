@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { getPublicProjectBySlug } from "~/server/public-cms";
+import { getProjectBySlug, projects } from "~/app/_data/public-content";
 
-export const dynamic = "force-dynamic";
+export function generateStaticParams() {
+  return projects.map((project) => ({ slug: project.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -13,7 +15,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await getPublicProjectBySlug(slug);
+  const project = getProjectBySlug(slug);
   if (!project) return { title: "Not Found" };
   return { title: `${project.title} — Ali Abdullah` };
 }
@@ -24,7 +26,7 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await getPublicProjectBySlug(slug);
+  const project = getProjectBySlug(slug);
   if (!project) notFound();
 
   return (

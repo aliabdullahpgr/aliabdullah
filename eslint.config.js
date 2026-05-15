@@ -14,6 +14,7 @@ export default tseslint.config(
       "generated/**",
       "dashboard/**",
       "design system/**",
+      "src/app/_disabled/**",
       "next-env.d.ts",
     ],
   },

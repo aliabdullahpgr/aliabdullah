@@ -1,18 +1,14 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { getPublicArticles } from "~/server/public-cms";
+import { articles } from "~/app/_data/public-content";
 
 export const metadata = {
   title: "Writing — Ali Abdullah",
 };
 
-export default async function WritingPage() {
-  const articles = await getPublicArticles();
-
+export default function WritingPage() {
   // Group by year from date string
   const grouped = articles.reduce(
     (acc, article) => {

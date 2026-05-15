@@ -5,7 +5,8 @@ import { env } from "~/env";
 import { db } from "~/server/db";
 
 export const auth = betterAuth({
-  secret: env.BETTER_AUTH_SECRET || "dummy-secret-for-build-time-only-1234567890",
+  secret:
+    env.BETTER_AUTH_SECRET ?? "dummy-secret-for-build-time-only-1234567890",
   baseURL:
     env.BETTER_AUTH_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   database: prismaAdapter(db, {

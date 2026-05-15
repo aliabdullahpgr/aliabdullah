@@ -30,16 +30,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm prisma generate
-        env:
-          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
-
-      - name: Validate Prisma schema
-        run: pnpm prisma validate
-        env:
-          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
-
       - name: Run TypeScript check
         run: npx tsc --noEmit
 
@@ -51,11 +41,3 @@ jobs:
 
       - name: Run Production Build
         run: pnpm build
-        env:
-          BETTER_AUTH_SECRET: "ci-build-secret-change-me-32-characters"
-          BETTER_AUTH_GITHUB_CLIENT_ID: "ci-github-client-id"
-          BETTER_AUTH_GITHUB_CLIENT_SECRET: "ci-github-client-secret"
-          BETTER_AUTH_URL: "http://localhost:3000"
-          UPSTASH_REDIS_REST_URL: "https://ci-upstash.example.com"
-          UPSTASH_REDIS_REST_TOKEN: "ci-upstash-token"
-          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"

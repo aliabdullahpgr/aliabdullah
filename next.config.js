@@ -1,22 +1,11 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-/**
- * Importing env here makes production builds fail early when required runtime
- * configuration is missing or malformed.
- */
-import "./src/env.js";
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import("next").NextConfig} */
 const config = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  outputFileTracingRoot: __dirname,
   async headers() {
     return [
       {

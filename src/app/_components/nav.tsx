@@ -20,14 +20,14 @@ export function Nav() {
           <span>&nbsp;/ swe</span>
         </Link>
         <div className="nav-links">
-          <Link href="/chat" className={linkClass("/chat")}>
-            Chat
-          </Link>
           <Link href="/projects" className={linkClass("/projects")}>
             Work
           </Link>
           <Link href="/writing" className={linkClass("/writing")}>
             Writing
+          </Link>
+          <Link href="/#contact" className="">
+            Contact
           </Link>
         </div>
       </div>
