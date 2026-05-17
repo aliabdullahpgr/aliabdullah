@@ -1,88 +1,41 @@
 import "server-only";
 
-import type { api as serverApi } from "~/trpc/server";
+import { db } from "~/server/db";
 
-type PublicApi = typeof serverApi;
-
-type SiteConfig = {
-  key: string;
-  value: string;
-};
-
-type PublicProject = {
-  id: string;
-  slug: string;
-  title: string;
-  lede: string;
-  label: string;
-  meta: string;
-  desc: string;
-  year: string;
-  status: string;
-  role: string;
-  stack: string[];
-  category: string;
-  tags: string[];
-  sections?: Array<{
-    id: string;
-    heading: string;
-    content: string;
-  }>;
-};
-
-type PublicArticle = {
-  id: string;
-  slug: string;
-  title: string;
-  lede: string;
-  date: string;
-  readTime: string;
-  category: string;
-  tags: string[];
-  content?: string;
-};
-
-type ChatConfig = {
-  pageTitle: string;
-  modelName: string;
-  systemPrompt: string;
-};
-
-const defaultChatConfig: ChatConfig = {
+const defaultChatConfig = {
   pageTitle: "Ask Ali anything",
-  modelName: "claude-3-5-sonnet",
+  modelName: "gemini-2.5-flash",
   systemPrompt: "",
 };
 
-async function withPublicCms<T>(
-  read: (api: PublicApi) => Promise<T>,
-) {
-  const { api } = await import("~/trpc/server");
-  return read(api);
-}
-
 export const getPublicSiteConfigs = (keys: string[]) =>
-  withPublicCms<SiteConfig[]>((api) =>
-    api.siteConfig.getManyByKeys({ keys }),
-  );
+  db.siteConfig.findMany({
+    where: { key: { in: keys } },
+    select: { key: true, value: true },
+  });
 
 export const getPublicProjects = () =>
-  withPublicCms<PublicProject[]>((api) => api.project.getAll());
+  db.project.findMany({
+    where: { published: true },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+  });
 
 export const getPublicProjectBySlug = (slug: string) =>
-  withPublicCms<PublicProject | null>((api) =>
-    api.project.getBySlug({ slug }),
-  );
+  db.project.findUnique({
+    where: { slug, published: true },
+    include: { sections: { orderBy: { order: "asc" } } },
+  });
 
 export const getPublicArticles = () =>
-  withPublicCms<PublicArticle[]>((api) => api.article.getAll());
+  db.article.findMany({
+    where: { published: true },
+    orderBy: { createdAt: "desc" },
+  });
 
 export const getPublicArticleBySlug = (slug: string) =>
-  withPublicCms<PublicArticle | null>((api) =>
-    api.article.getBySlug({ slug }),
-  );
+  db.article.findUnique({ where: { slug, published: true } });
 
-export const getPublicChatConfig = () =>
-  withPublicCms<ChatConfig>((api) => api.chat.getConfig()).then(
-    (config) => config ?? defaultChatConfig,
-  );
+export const getPublicChatConfig = async () => {
+  const config = await db.chatConfig.findFirst();
+  return config ?? defaultChatConfig;
+};

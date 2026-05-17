@@ -28,7 +28,6 @@ model User {
   updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
-  posts         Post[]
   auditLogs     AuditLog[] // Tracks actions performed by this admin
 
   @@unique([email])
@@ -80,20 +79,6 @@ model Verification {
   @@map("verification")
 }
 
-// ─── Legacy Post Model (keep for compatibility) ───
-
-model Post {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  createdBy   User   @relation(fields: [createdById], references: [id])
-  createdById String
-
-  @@index([name])
-}
-
 // ─── Portfolio CMS Models ───
 
 model SiteConfig {
@@ -122,6 +107,9 @@ model Project {
   stack       String[] // tags
   category    String   @default("General")
   tags        String[]
+  image       String?  // uploadthing public URL
+  liveUrl     String?  // public demo / deployed URL
+  githubUrl   String?  // source repo URL
   published   Boolean  @default(true)
   order       Int      @default(0)
   createdAt   DateTime @default(now())
@@ -156,6 +144,7 @@ model Article {
   category  String   @default("Notes")
   tags      String[]
   content   String   @db.Text // HTML content
+  image     String?  // uploadthing public URL (cover image)
   published Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

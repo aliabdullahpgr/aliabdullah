@@ -8,6 +8,7 @@ interface Project {
   title: string;
   desc: string;
   tags: string[];
+  image?: string | null;
 }
 
 interface WorkProps {
@@ -59,7 +60,17 @@ export function Work({ projects }: WorkProps) {
         <div className="cards">
           {displayProjects.map((p) => (
             <Link className="card" href={`/projects/${p.slug}`} key={p.slug}>
-              <div className="card-thumb" data-label={p.label}></div>
+              {p.image ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  className="card-thumb"
+                  src={p.image}
+                  alt={p.label}
+                  style={{ objectFit: "cover", display: "block" }}
+                />
+              ) : (
+                <div className="card-thumb" data-label={p.label}></div>
+              )}
               <div className="card-body">
                 <div className="card-meta">
                   <span>

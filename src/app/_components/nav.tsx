@@ -26,8 +26,8 @@ export function Nav() {
           <Link href="/writing" className={linkClass("/writing")}>
             Writing
           </Link>
-          <Link href="/#contact" className="">
-            Contact
+          <Link href="/chat" className={linkClass("/chat")}>
+            Chat
           </Link>
         </div>
       </div>

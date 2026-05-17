@@ -31,6 +31,15 @@ export const projectRouter = createTRPCRouter({
       });
     }),
 
+  getByIdAdmin: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.project.findUnique({
+        where: { id: input.id },
+        include: { sections: { orderBy: { order: "asc" } } },
+      });
+    }),
+
   create: adminProcedure
     .input(
       z.object({
@@ -46,6 +55,9 @@ export const projectRouter = createTRPCRouter({
         stack: z.array(z.string()).optional(),
         category: z.string().optional(),
         tags: z.array(z.string()).optional(),
+        image: z.string().url().nullable().optional(),
+        liveUrl: z.string().url().nullable().optional().or(z.literal("")),
+        githubUrl: z.string().url().nullable().optional().or(z.literal("")),
         published: z.boolean().optional(),
         order: z.number().optional(),
       }),
@@ -72,6 +84,9 @@ export const projectRouter = createTRPCRouter({
         stack: z.array(z.string()).optional(),
         category: z.string().optional(),
         tags: z.array(z.string()).optional(),
+        image: z.string().url().nullable().optional(),
+        liveUrl: z.string().url().nullable().optional().or(z.literal("")),
+        githubUrl: z.string().url().nullable().optional().or(z.literal("")),
         published: z.boolean().optional(),
         order: z.number().optional(),
       }),

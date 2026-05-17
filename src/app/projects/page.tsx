@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { projects } from "~/app/_data/public-content";
+import { getPublicProjects } from "~/server/public-cms";
 
 export const metadata = {
   title: "Projects — Ali Abdullah",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getPublicProjects();
+
   // Group projects by year
   const grouped = projects.reduce(
     (acc, project) => {
@@ -79,7 +81,17 @@ export default function ProjectsPage() {
                   href={`/projects/${p.slug}`}
                   key={p.slug}
                 >
-                  <div className="card-thumb" data-label={p.label}></div>
+                  {p.image ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      className="card-thumb"
+                      src={p.image}
+                      alt={p.label}
+                      style={{ objectFit: "cover", display: "block" }}
+                    />
+                  ) : (
+                    <div className="card-thumb" data-label={p.label}></div>
+                  )}
                   <div className="card-body">
                     <div className="card-meta">
                       <span>{p.meta}</span>
@@ -88,7 +100,7 @@ export default function ProjectsPage() {
                     <h3 className="card-title">{p.title}</h3>
                     <p className="card-desc">{p.desc}</p>
                     <div className="card-tags">
-                      {p.stack.map((t: string) => (
+                      {p.stack.map((t) => (
                         <span className="tag" key={t}>
                           {t}
                         </span>

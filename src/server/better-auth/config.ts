@@ -9,11 +9,18 @@ export const auth = betterAuth({
     env.BETTER_AUTH_SECRET ?? "dummy-secret-for-build-time-only-1234567890",
   baseURL:
     env.BETTER_AUTH_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  trustedOrigins: [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://168.144.125.13:3000",
+    ...(env.BETTER_AUTH_URL ? [env.BETTER_AUTH_URL] : []),
+  ],
   database: prismaAdapter(db, {
     provider: "postgresql", // or "sqlite" or "mysql"
   }),
   emailAndPassword: {
     enabled: true,
+    disableSignUp: true,
   },
   socialProviders: {
     github: {

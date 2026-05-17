@@ -42,7 +42,6 @@
     "node_modules",
     "generated",
     "design system",
-    "dashboard",
-    "src/app/_disabled"
+    "dashboard"
   ]
 }

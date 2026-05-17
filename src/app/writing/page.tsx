@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Nav } from "~/app/_components/nav";
 import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
-import { articles } from "~/app/_data/public-content";
+import { getPublicArticles } from "~/server/public-cms";
 
 export const metadata = {
   title: "Writing — Ali Abdullah",
 };
 
-export default function WritingPage() {
+export default async function WritingPage() {
+  const articles = await getPublicArticles();
+
   // Group by year from date string
   const grouped = articles.reduce(
     (acc, article) => {

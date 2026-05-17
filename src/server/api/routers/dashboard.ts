@@ -5,33 +5,33 @@ import { createAuditLog } from "~/server/audit";
 
 export const dashboardRouter = createTRPCRouter({
   getStats: adminProcedure.query(async ({ ctx }) => {
-    const [totalUsers, totalPosts, totalProjects, totalArticles] =
-      await Promise.all([
-        ctx.db.user.count(),
-        ctx.db.post.count(),
-        ctx.db.project.count(),
-        ctx.db.article.count(),
-      ]);
+    const [totalUsers, totalProjects, totalArticles] = await Promise.all([
+      ctx.db.user.count(),
+      ctx.db.project.count(),
+      ctx.db.article.count(),
+    ]);
 
     return {
       totalUsers,
-      totalPosts,
       totalProjects,
       totalArticles,
-      recentActivity: totalPosts + totalUsers + totalProjects + totalArticles,
+      recentActivity: totalUsers + totalProjects + totalArticles,
     };
   }),
 
-  getRecentPosts: adminProcedure
+  getRecentArticles: adminProcedure
     .input(z.object({ limit: z.number().min(1).max(50).default(10) }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.post.findMany({
+      return ctx.db.article.findMany({
         take: input.limit,
         orderBy: { createdAt: "desc" },
-        include: {
-          createdBy: {
-            select: { id: true, name: true, email: true, image: true },
-          },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          date: true,
+          published: true,
+          createdAt: true,
         },
       });
     }),
@@ -71,7 +71,7 @@ export const dashboardRouter = createTRPCRouter({
             image: true,
             emailVerified: true,
             createdAt: true,
-            _count: { select: { posts: true } },
+            role: true,
           },
         }),
         ctx.db.user.count({ where }),

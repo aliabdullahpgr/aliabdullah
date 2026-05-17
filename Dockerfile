@@ -1,56 +1,46 @@
-FROM node:18-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-
-# Install pnpm
+FROM node:24-alpine AS base
+RUN apk add --no-cache libc6-compat openssl
 RUN corepack enable pnpm
 
-# Install dependencies based on the preferred package manager
-COPY package.json pnpm-lock.yaml* ./
-RUN pnpm i --frozen-lockfile
+# ─── deps ───
+FROM base AS deps
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma
+RUN pnpm install --frozen-lockfile
 
-# Rebuild the source code only when needed
+# ─── builder ───
 FROM base AS builder
 WORKDIR /app
-RUN corepack enable pnpm
-
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma Client if applicable
-RUN pnpm dlx prisma generate
+# Build-time env: skip strict validation (real secrets injected at runtime).
+# next.config.js does not read env at build time, so this is safe.
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV SKIP_ENV_VALIDATION=1
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV SKIP_ENV_VALIDATION 1
+RUN pnpm db:generate
+RUN pnpm build
 
-RUN pnpm run build
-
-# Production image, copy all the files and run next
+# ─── runner ───
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=8080
+ENV HOSTNAME=0.0.0.0
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+RUN mkdir .next && chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -58,10 +48,14 @@ USER nextjs
 
 EXPOSE 8080
 
-ENV PORT 8080
-# set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
+# Required runtime env vars (must be injected by the platform — Cloud Run secrets, etc.):
+#   DATABASE_URL                       postgres://... (with ?sslmode=require for managed pg)
+#   BETTER_AUTH_SECRET                 >= 32 chars
+#   BETTER_AUTH_URL                    https://<your-domain>
+#   BETTER_AUTH_GITHUB_CLIENT_ID
+#   BETTER_AUTH_GITHUB_CLIENT_SECRET
+#   UPSTASH_REDIS_REST_URL
+#   UPSTASH_REDIS_REST_TOKEN
+#   GEMINI_API_KEY
 
-# Note: Cloud Run uses the PORT environment variable (default 8080).
-# Next.js will automatically use this.
 CMD ["node", "server.js"]

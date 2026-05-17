@@ -567,15 +567,16 @@ async function main() {
   console.log("✓ Chat responses seeded");
 
   // ─── Chat Config ───
+  const chatConfigData = {
+    pageTitle: "Ask Ali anything",
+    modelName: "gemini-2.5-flash",
+    systemPrompt:
+      "You are a friendly assistant representing Ali Abdullah, a Software Engineer based in Multan, Pakistan. Answer questions about Ali's work, skills, and projects concisely. If the user wants to contact Ali or schedule a call, use the send_message or schedule_meeting tool. Don't make up specifics — defer to 'you'd have to ask him directly' when unsure.",
+  };
   await db.chatConfig.upsert({
     where: { key: "default" },
-    update: {},
-    create: {
-      key: "default",
-      pageTitle: "Ask Ali anything",
-      modelName: "claude-3-5-sonnet",
-      systemPrompt: "",
-    },
+    update: chatConfigData,
+    create: { key: "default", ...chatConfigData },
   });
   console.log("✓ Chat config seeded");
 

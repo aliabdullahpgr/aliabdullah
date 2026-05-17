@@ -48,6 +48,7 @@ export const articleRouter = createTRPCRouter({
         category: z.string().optional(),
         tags: z.array(z.string()).optional(),
         content: z.string().min(1),
+        image: z.string().url().nullable().optional(),
         published: z.boolean().optional(),
       }),
     )
@@ -76,6 +77,7 @@ export const articleRouter = createTRPCRouter({
         category: z.string().optional(),
         tags: z.array(z.string()).optional(),
         content: z.string().optional(),
+        image: z.string().url().nullable().optional(),
         published: z.boolean().optional(),
       }),
     )
