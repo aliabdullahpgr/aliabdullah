@@ -10,7 +10,7 @@ if (!hasRedisEnv && process.env.NODE_ENV === "production") {
   console.info("ℹ️  INFO: Upstash Redis env vars missing. Rate limiting bypassed for local development.");
 }
 
-const redis = hasRedisEnv ? Redis.fromEnv() : null;
+export const redis = hasRedisEnv ? Redis.fromEnv() : null;
 
 // Mock Ratelimit for development without Redis
 const mockLimit = async () => ({ success: true, pending: Promise.resolve() } as const);

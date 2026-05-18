@@ -6,12 +6,13 @@ import { api } from "~/trpc/react";
 interface Message {
   role: "user" | "agent";
   text: string;
+  isError?: boolean;
 }
 
 function ToolCard({ kind }: { kind: "message" | "meeting" }) {
   const isMeeting = kind === "meeting";
   const [value, setValue] = useState("");
-  const [status, setStatus] = useState("awaiting input");
+  const [status, setStatus] = useState<"awaiting input" | "sent → mail client" | "cancelled">("awaiting input");
 
   const { data: configs } = api.siteConfig.getManyByKeys.useQuery({
     keys: ["contact.email"],
@@ -77,10 +78,11 @@ export function ChatInterface() {
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [lastQuestion, setLastQuestion] = useState<string | null>(null);
   const threadRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { data: suggestions } = api.chat.getSuggestions.useQuery();
+  const { data: suggestions, isLoading: loadingSuggestions, error: suggestionError } = api.chat.getSuggestions.useQuery();
 
   useEffect(() => {
     if (threadRef.current) {
@@ -101,6 +103,7 @@ export function ChatInterface() {
 
   async function ask(q: string, toolHint?: "message" | "meeting") {
     setShowIntro(false);
+    setLastQuestion(q);
     const prevMessages = messages;
     setMessages((prev) => [...prev, { role: "user", text: q }]);
     setThinking(true);
@@ -116,6 +119,11 @@ export function ChatInterface() {
       return;
     }
 
+    await runQuery(q, prevMessages);
+  }
+
+  async function runQuery(q: string, prevMessages: Message[]) {
+    setThinking(true);
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -198,10 +206,18 @@ export function ChatInterface() {
         ...prev,
         {
           role: "agent",
-          text: "Something went wrong. Try again or email directly.",
+          text: "Something went wrong.",
+          isError: true,
         },
       ]);
     }
+  }
+
+  function retry() {
+    if (!lastQuestion) return;
+    const prev = messages.filter((m) => !m.isError).filter((m, i, arr) => i < arr.length - 1);
+    setMessages(prev);
+    void runQuery(lastQuestion, prev.filter((m) => m.role !== "agent"));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -220,6 +236,15 @@ export function ChatInterface() {
           <div className="intro">
             <div className="hint">Try one of these</div>
             <div className="suggest">
+              {loadingSuggestions && (
+                <div className="skeleton-row">
+                  <span className="skel" style={{ width: "60%" }} />
+                  <span className="skel" style={{ width: "30%" }} />
+                </div>
+              )}
+              {suggestionError && (
+                <p className="text-muted-foreground text-sm">Could not load suggestions.</p>
+              )}
               {suggestions?.map((s) => (
                 <button
                   key={s.id}
@@ -237,7 +262,7 @@ export function ChatInterface() {
                   <span className="arr">→</span>
                 </button>
               ))}
-              {!suggestions?.length && (
+              {!suggestions?.length && !loadingSuggestions && !suggestionError && (
                 <p className="text-muted-foreground text-sm">
                   No suggestions configured.
                 </p>
@@ -251,6 +276,24 @@ export function ChatInterface() {
               | "message"
               | "meeting";
             return <ToolCard key={i} kind={tool} />;
+          }
+          if (m.isError) {
+            return (
+              <div className="msg agent error" key={i}>
+                <div className="who">Agent</div>
+                <div className="body">
+                  <p>{m.text}</p>
+                  <button
+                    type="button"
+                    className="retry-btn"
+                    onClick={retry}
+                    disabled={thinking}
+                  >
+                    Try again ↻
+                  </button>
+                </div>
+              </div>
+            );
           }
           return (
             <div className={`msg ${m.role}`} key={i}>
@@ -300,7 +343,7 @@ export function ChatInterface() {
               }
             }}
           />
-          <button className="send" type="submit" disabled={thinking}>
+          <button className="send" type="submit" disabled={thinking} style={thinking ? { cursor: "not-allowed", opacity: 0.5 } : undefined}>
             Send →
           </button>
         </form>

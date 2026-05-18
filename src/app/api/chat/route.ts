@@ -5,6 +5,7 @@ import {
   type FunctionDeclaration,
 } from "@google/generative-ai";
 import { db } from "~/server/db";
+import { getChatResponse, setChatResponse } from "~/server/chat-cache";
 
 export const runtime = "nodejs";
 
@@ -96,6 +97,23 @@ export async function POST(req: Request) {
     return Response.json({ error: "Empty message" }, { status: 400 });
   }
 
+  // Check Redis cache for exact question match
+  const normalizedPrompt = userMessage.trim();
+  const cachedAnswer = await getChatResponse(normalizedPrompt);
+  if (cachedAnswer) {
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "text", chunk: cachedAnswer })}\n\n`));
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`));
+        controller.close();
+      },
+    });
+    return new Response(stream, {
+      headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" },
+    });
+  }
+
   const [config, chatResponses] = await Promise.all([
     db.chatConfig.findFirst(),
     db.chatResponse.findMany({ where: { active: true }, orderBy: { order: "asc" } }),
@@ -128,6 +146,8 @@ export async function POST(req: Request) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
       }
 
+      let fullResponse = "";
+
       try {
         const result = await chat.sendMessageStream(userMessage);
 
@@ -145,8 +165,14 @@ export async function POST(req: Request) {
 
           const text = chunk.text();
           if (text) {
+            fullResponse += text;
             send({ type: "text", chunk: text });
           }
+        }
+
+        // Cache non-tool text responses for reuse
+        if (fullResponse && !fullResponse.includes("__TOOL")) {
+          void setChatResponse(normalizedPrompt, fullResponse);
         }
 
         send({ type: "done" });
