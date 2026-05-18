@@ -230,7 +230,7 @@ export default function ProjectsManager() {
                 </td>
               </tr>
             ) : (
-              projects?.map((project) => (
+              (projects ?? []).map((project) => (
                 <tr
                   key={project.id}
                   className="transition-colors hover:bg-[var(--bg-2)]"

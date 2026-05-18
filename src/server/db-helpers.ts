@@ -9,6 +9,9 @@ const ARRAY_FIELDS: Record<string, string[]> = {
 };
 
 /** Parse JSON array fields after reading from DB */
+export function parseArrays<T>(obj: T[], table: string): T[];
+export function parseArrays<T>(obj: T, table: string): T;
+export function parseArrays<T>(obj: T | null, table: string): T | null;
 export function parseArrays<T>(obj: T | T[] | null, table: string): T | T[] | null {
   if (obj === null || obj === undefined) return obj;
   if (Array.isArray(obj)) return obj.map((item) => parseArrays(item, table)) as T[];

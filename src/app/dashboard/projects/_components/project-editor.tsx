@@ -195,6 +195,7 @@ export default function ProjectEditor({ projectId }: ProjectEditorProps) {
             ...buildPayload(),
             published: wantPublished,
           });
+          if (!created) return;
           await syncSections(created.id);
           setPublished(wantPublished);
           setSaved(true);

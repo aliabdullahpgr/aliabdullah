@@ -17,7 +17,7 @@ export const projectRouter = createTRPCRouter({
       where: { published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
-    return results.map((r) => parseArrays(r, TABLE));
+    return results.map((r) => parseArrays(r!, TABLE));
   }),
 
   getAllAdmin: adminProcedure.query(async ({ ctx }) => {

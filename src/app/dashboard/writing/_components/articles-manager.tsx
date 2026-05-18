@@ -41,8 +41,8 @@ export default function ArticlesManager() {
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
 
-  const filtered = articles
-    ?.filter((a) => {
+  const filtered = (articles ?? [])
+    .filter((a) => {
       if (filter === "published") return a.published;
       if (filter === "draft") return !a.published;
       return true;
@@ -59,8 +59,8 @@ export default function ArticlesManager() {
 
   const counts = {
     all: articles?.length ?? 0,
-    published: articles?.filter((a) => a.published).length ?? 0,
-    draft: articles?.filter((a) => !a.published).length ?? 0,
+    published: (articles ?? []).filter((a) => a.published).length ?? 0,
+    draft: (articles ?? []).filter((a) => !a.published).length ?? 0,
   };
 
   return (

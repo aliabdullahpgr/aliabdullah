@@ -16,14 +16,14 @@ export const articleRouter = createTRPCRouter({
       where: { published: true },
       orderBy: { createdAt: "desc" },
     });
-    return results.map((r) => parseArrays(r, TABLE));
+    return results.map((r) => parseArrays(r!, TABLE));
   }),
 
   getAllAdmin: adminProcedure.query(async ({ ctx }) => {
     const results = await ctx.db.article.findMany({
       orderBy: { createdAt: "desc" },
     });
-    return results.map((r) => parseArrays(r, TABLE));
+    return results.map((r) => parseArrays(r!, TABLE));
   }),
 
   getBySlug: publicProcedure

@@ -1,10 +1,7 @@
 import "server-only";
 
-import type { Prisma } from "@prisma/client";
 import { db } from "~/server/db";
 import { parseArrays } from "~/server/db-helpers";
-
-type ProjectWithSections = Prisma.ProjectGetPayload<{ include: { sections: true } }>;
 
 const defaultChatConfig = {
   pageTitle: "Ask Ali anything",
@@ -23,7 +20,7 @@ export const getPublicProjects = async () => {
     where: { published: true },
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
-  return results.map((r) => parseArrays(r, "project")) as typeof results;
+  return parseArrays(results, "project");
 };
 
 export const getPublicProjectBySlug = async (slug: string) => {
@@ -31,7 +28,7 @@ export const getPublicProjectBySlug = async (slug: string) => {
     where: { slug, published: true },
     include: { sections: { orderBy: { order: "asc" } } },
   });
-  return parseArrays(result, "project") as ProjectWithSections | null;
+  return parseArrays(result, "project");
 };
 
 export const getPublicArticles = async () => {
@@ -39,12 +36,12 @@ export const getPublicArticles = async () => {
     where: { published: true },
     orderBy: { createdAt: "desc" },
   });
-  return results.map((r) => parseArrays(r, "article")) as typeof results;
+  return parseArrays(results, "article");
 };
 
 export const getPublicArticleBySlug = async (slug: string) => {
   const result = await db.article.findUnique({ where: { slug, published: true } });
-  return parseArrays(result, "article") as typeof result;
+  return parseArrays(result, "article");
 };
 
 export const getPublicChatConfig = async () => {
