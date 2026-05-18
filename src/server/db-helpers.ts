@@ -14,7 +14,7 @@ export function parseArrays<T>(obj: T, table: string): T;
 export function parseArrays<T>(obj: T | null, table: string): T | null;
 export function parseArrays<T>(obj: T | T[] | null, table: string): T | T[] | null {
   if (obj === null || obj === undefined) return obj;
-  if (Array.isArray(obj)) return obj.map((item) => parseArrays(item, table)) as T[];
+  if (Array.isArray(obj)) return obj.map((item) => parseArrays(item, table));
 
   const fields = ARRAY_FIELDS[table];
   if (!fields) return obj;

@@ -16,14 +16,14 @@ export const articleRouter = createTRPCRouter({
       where: { published: true },
       orderBy: { createdAt: "desc" },
     });
-    return results.map((r) => parseArrays(r!, TABLE));
+    return results.map((r) => parseArrays(r, TABLE));
   }),
 
   getAllAdmin: adminProcedure.query(async ({ ctx }) => {
     const results = await ctx.db.article.findMany({
       orderBy: { createdAt: "desc" },
     });
-    return results.map((r) => parseArrays(r!, TABLE));
+    return results.map((r) => parseArrays(r, TABLE));
   }),
 
   getBySlug: publicProcedure
@@ -67,7 +67,8 @@ export const articleRouter = createTRPCRouter({
           return frame.tag === "script" || frame.tag === "object" || frame.tag === "embed";
         },
       });
-      const data = stringifyArrays({ ...input, content: safeContent } as Record<string, unknown>, TABLE);
+      const data = stringifyArrays({ ...input, content: safeContent }, TABLE);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
       const article = await ctx.db.article.create({ data: data as any });
       void createAuditLog(ctx.session.user.id, "create", "article", article.id, { slug: article.slug });
       return parseArrays(article, TABLE);
@@ -100,7 +101,8 @@ export const articleRouter = createTRPCRouter({
             },
           })
         : undefined;
-      const data = stringifyArrays({ ...rest, ...(safeContent && { content: safeContent }) } as Record<string, unknown>, TABLE);
+      const data = stringifyArrays({ ...rest, ...(safeContent && { content: safeContent }) }, TABLE);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
       const article = await ctx.db.article.update({ where: { id }, data: data as any });
       const changedFields = Object.keys(rest).filter((k) => rest[k as keyof typeof rest] !== undefined);
       void createAuditLog(ctx.session.user.id, "update", "article", article.id, { changedFields });

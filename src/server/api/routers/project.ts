@@ -9,7 +9,6 @@ import { createAuditLog } from "~/server/audit";
 import { parseArrays, stringifyArrays } from "~/server/db-helpers";
 
 const TABLE = "project";
-const TABLE_SECTION = "project_section";
 
 export const projectRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -17,7 +16,7 @@ export const projectRouter = createTRPCRouter({
       where: { published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
-    return results.map((r) => parseArrays(r!, TABLE));
+    return results.map((r) => parseArrays(r, TABLE));
   }),
 
   getAllAdmin: adminProcedure.query(async ({ ctx }) => {
@@ -71,7 +70,8 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const data = stringifyArrays(input as Record<string, unknown>, TABLE);
+      const data = stringifyArrays(input, TABLE);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
       const project = await ctx.db.project.create({ data: data as any });
       void createAuditLog(ctx.session.user.id, "create", "project", project.id, { slug: project.slug });
       return parseArrays(project, TABLE);
@@ -102,7 +102,8 @@ export const projectRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...rest } = input;
-      const data = stringifyArrays(rest as Record<string, unknown>, TABLE);
+      const data = stringifyArrays(rest, TABLE);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
       const project = await ctx.db.project.update({ where: { id }, data: data as any });
       const changedFields = Object.keys(rest).filter((k) => rest[k as keyof typeof rest] !== undefined);
       void createAuditLog(ctx.session.user.id, "update", "project", project.id, { changedFields });
