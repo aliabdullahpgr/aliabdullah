@@ -4,6 +4,8 @@ import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
 import { getPublicArticles } from "~/server/public-cms";
 
+export const revalidate = 60;
+
 export const metadata = {
   title: "Writing — Ali Abdullah",
 };

@@ -99,8 +99,8 @@ export default function ProjectEditor({ projectId }: ProjectEditorProps) {
       setStatus(project.status);
       setRole(project.role);
       setCategory(project.category);
-      setStack(project.stack.join(", "));
-      setTags(project.tags.join(", "));
+      setStack((project.stack as unknown as string[]).join(", "));
+      setTags((project.tags as unknown as string[]).join(", "));
       setImage(project.image ?? null);
       setLiveUrl(project.liveUrl ?? "");
       setGithubUrl(project.githubUrl ?? "");

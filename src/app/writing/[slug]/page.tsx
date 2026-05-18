@@ -9,6 +9,8 @@ import {
   getPublicArticles,
 } from "~/server/public-cms";
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const articles = await getPublicArticles();
   return articles.map((article) => ({ slug: article.slug }));
@@ -84,7 +86,7 @@ export default async function ArticlePage({
       <div className="wrap">
         <div className="article-foot">
           <div className="tags">
-            {article.tags.map((t: string) => (
+            {(article.tags as unknown as string[]).map((t: string) => (
               <span className="tag" key={t}>
                 {t}
               </span>

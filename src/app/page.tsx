@@ -11,6 +11,8 @@ import {
   getPublicSiteConfigs,
 } from "~/server/public-cms";
 
+export const revalidate = 60;
+
 const SITE_CONFIG_KEYS = [
   "hero.tagline",
   "hero.taglineEmphasis",
@@ -43,7 +45,7 @@ export default async function Home() {
     category: p.category,
     title: p.title,
     desc: p.desc,
-    tags: p.stack,
+    tags: p.stack as unknown as string[],
     image: p.image,
   }));
 

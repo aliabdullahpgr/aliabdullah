@@ -9,6 +9,8 @@ import {
   getPublicProjects,
 } from "~/server/public-cms";
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const projects = await getPublicProjects();
   return projects.map((project) => ({ slug: project.slug }));
@@ -85,7 +87,7 @@ export default async function ProjectPage({
           <div className="row">
             <span className="k">Stack</span>
             <span className="stack">
-              {project.stack.map((t: string) => (
+              {(project.stack as unknown as string[]).map((t: string) => (
                 <span className="tag" key={t}>
                   {t}
                 </span>

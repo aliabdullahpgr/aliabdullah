@@ -4,6 +4,8 @@ import { Contact } from "~/app/_components/contact";
 import { Footer } from "~/app/_components/footer";
 import { getPublicProjects } from "~/server/public-cms";
 
+export const revalidate = 60;
+
 export const metadata = {
   title: "Projects — Ali Abdullah",
 };
@@ -100,7 +102,7 @@ export default async function ProjectsPage() {
                     <h3 className="card-title">{p.title}</h3>
                     <p className="card-desc">{p.desc}</p>
                     <div className="card-tags">
-                      {p.stack.map((t) => (
+                      {(p.stack as unknown as string[]).map((t) => (
                         <span className="tag" key={t}>
                           {t}
                         </span>

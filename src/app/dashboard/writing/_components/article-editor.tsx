@@ -71,7 +71,7 @@ export default function ArticleEditor({ articleId }: ArticleEditorProps) {
       setDate(article.date.replace(/ · /g, "-"));
       setReadTime(article.readTime ?? "");
       setCategory(article.category ?? "Engineering");
-      setTags(article.tags.join(", "));
+      setTags((article.tags as unknown as string[]).join(", "));
       setImage(article.image ?? null);
       setPublished(article.published);
       setOgDescription(article.lede);
