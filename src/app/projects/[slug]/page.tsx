@@ -9,7 +9,8 @@ import {
   getPublicProjects,
 } from "~/server/public-cms";
 
-export const revalidate = 60;
+export const preferredRegion = "bom1";
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const projects = await getPublicProjects();

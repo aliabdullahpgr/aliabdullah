@@ -39,6 +39,9 @@ export const env = createEnv({
     UPLOADTHING_TOKEN: isProduction
       ? z.string().min(1)
       : z.string().min(1).optional(),
+    REVALIDATE_SECRET: isProduction
+      ? z.string().min(1)
+      : z.string().min(1).optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -69,6 +72,7 @@ export const env = createEnv({
     TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
+    REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**

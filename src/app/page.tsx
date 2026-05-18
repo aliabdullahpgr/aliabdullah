@@ -11,7 +11,7 @@ import {
   getPublicSiteConfigs,
 } from "~/server/public-cms";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const SITE_CONFIG_KEYS = [
   "hero.tagline",

@@ -8,6 +8,12 @@ const config = {
   output: "standalone",
   outputFileTracingRoot: __dirname,
   serverExternalPackages: ["@libsql/client", "@prisma/adapter-libsql"],
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "utfs.io" },
+      { protocol: "https", hostname: "uploadthing.com" },
+    ],
+  },
   async headers() {
     return [
       {

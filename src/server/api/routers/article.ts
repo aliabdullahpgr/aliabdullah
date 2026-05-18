@@ -71,6 +71,12 @@ export const articleRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
       const article = await ctx.db.article.create({ data: data as any });
       void createAuditLog(ctx.session.user.id, "create", "article", article.id, { slug: article.slug });
+      void fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.REVALIDATE_SECRET}` },
+        body: JSON.stringify({ path: "/writing" }),
+      })// eslint-disable-next-line @typescript-eslint/no-empty-function
+      .catch(() => {});
       return parseArrays(article, TABLE);
     }),
 
@@ -106,6 +112,18 @@ export const articleRouter = createTRPCRouter({
       const article = await ctx.db.article.update({ where: { id }, data: data as any });
       const changedFields = Object.keys(rest).filter((k) => rest[k as keyof typeof rest] !== undefined);
       void createAuditLog(ctx.session.user.id, "update", "article", article.id, { changedFields });
+      void fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.REVALIDATE_SECRET}` },
+        body: JSON.stringify({ path: `/writing/${article.slug}` }),
+      })// eslint-disable-next-line @typescript-eslint/no-empty-function
+      .catch(() => {});
+      void fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.REVALIDATE_SECRET}` },
+        body: JSON.stringify({ path: "/writing" }),
+      })// eslint-disable-next-line @typescript-eslint/no-empty-function
+      .catch(() => {});
       return parseArrays(article, TABLE);
     }),
 
@@ -114,6 +132,18 @@ export const articleRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const article = await ctx.db.article.delete({ where: { id: input.id } });
       void createAuditLog(ctx.session.user.id, "delete", "article", article.id);
+      void fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.REVALIDATE_SECRET}` },
+        body: JSON.stringify({ path: "/writing" }),
+      })// eslint-disable-next-line @typescript-eslint/no-empty-function
+      .catch(() => {});
+      void fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.REVALIDATE_SECRET}` },
+        body: JSON.stringify({ path: `/writing/${article.slug}` }),
+      })// eslint-disable-next-line @typescript-eslint/no-empty-function
+      .catch(() => {});
       return article;
     }),
 });
