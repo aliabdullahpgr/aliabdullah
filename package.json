@@ -7,7 +7,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "build": "next build",
+    "build": "prisma generate && next build",
     "build:strict": "pnpm typecheck && pnpm lint && pnpm test:production && pnpm build",
     "check": "pnpm typecheck && pnpm lint && pnpm test:production",
     "db:generate": "prisma generate",
