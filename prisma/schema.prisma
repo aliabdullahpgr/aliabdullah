@@ -3,15 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
   binaryTargets = ["native", "debian-openssl-3.0.x", "windows"]
 }
 
-// NOTE: When using mysql or sqlserver, uncomment the //@db.Text annotations in model Account below
-// Further reading:
-// https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -19,10 +16,10 @@ datasource db {
 
 model User {
   id            String    @id
-  name          String //@db.Text
+  name          String
   email         String
   emailVerified Boolean   @default(false)
-  image         String? //@db.Text
+  image         String?
   role          String    @default("user") // Added role for RBAC
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
@@ -40,8 +37,8 @@ model Session {
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  ipAddress String? //@db.Text
-  userAgent String? //@db.Text
+  ipAddress String?
+  userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -51,17 +48,17 @@ model Session {
 
 model Account {
   id                    String    @id
-  accountId             String //@db.Text
-  providerId            String //@db.Text
+  accountId             String
+  providerId            String
   userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String? //@db.Text
-  refreshToken          String? //@db.Text
-  idToken               String? //@db.Text
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
   accessTokenExpiresAt  DateTime?
   refreshTokenExpiresAt DateTime?
-  scope                 String? //@db.Text
-  password              String? //@db.Text
+  scope                 String?
+  password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -70,8 +67,8 @@ model Account {
 
 model Verification {
   id         String   @id
-  identifier String //@db.Text
-  value      String //@db.Text
+  identifier String
+  value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
@@ -84,7 +81,7 @@ model Verification {
 model SiteConfig {
   id          String   @id @default(cuid())
   key         String   @unique
-  value       String   @db.Text
+  value       String
   type        String   @default("text") // text, html, markdown, json
   description String?
   updatedAt   DateTime @updatedAt
@@ -97,16 +94,16 @@ model Project {
   id          String   @id @default(cuid())
   slug        String   @unique
   title       String
-  lede        String   @db.Text
+  lede        String
   label       String   // e.g. "screenshot — dashboard"
   meta        String   // e.g. "2025 · Government"
-  desc        String   @db.Text
+  desc        String
   year        String
   status      String   @default("In production")
   role        String   @default("Full-stack")
-  stack       String[] // tags
+  stack       String   // JSON array
   category    String   @default("General")
-  tags        String[]
+  tags        String   // JSON array
   image       String?  // uploadthing public URL
   liveUrl     String?  // public demo / deployed URL
   githubUrl   String?  // source repo URL
@@ -125,7 +122,7 @@ model ProjectSection {
   projectId String
   order     Int      @default(0)
   heading   String
-  content   String   @db.Text // HTML content
+  content   String // HTML content
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -138,12 +135,12 @@ model Article {
   id        String   @id @default(cuid())
   slug      String   @unique
   title     String
-  lede      String   @db.Text
+  lede      String
   date      String   // e.g. "2026 · 04 · 22"
   readTime  String   @default("5 min read")
   category  String   @default("Notes")
-  tags      String[]
-  content   String   @db.Text // HTML content
+  tags      String   // JSON array
+  content   String // HTML content
   image     String?  // uploadthing public URL (cover image)
   published Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -168,7 +165,7 @@ model ChatSuggestion {
 model ChatResponse {
   id        String   @id @default(cuid())
   trigger   String   // keyword or phrase to match
-  response  String   @db.Text
+  response  String
   order     Int      @default(0)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -182,7 +179,7 @@ model ChatConfig {
   key         String   @unique
   pageTitle   String   @default("Ask Ali anything")
   modelName   String   @default("claude-3-5-sonnet")
-  systemPrompt String  @db.Text @default("")
+  systemPrompt String  @default("")
   updatedAt   DateTime @updatedAt
   createdAt   DateTime @default(now())
 
@@ -197,9 +194,9 @@ model AuditLog {
   action      String   // e.g. "update_article", "delete_user"
   entityType  String   // e.g. "article", "project"
   entityId    String
-  metadata    String?  @db.Text // JSON string for changes/context
+  metadata    String? // JSON string for changes/context
   ipAddress   String?
-  userAgent   String?  @db.Text
+  userAgent   String?
   createdAt   DateTime @default(now())
 
   user        User     @relation(fields: [actorUserId], references: [id], onDelete: Cascade)

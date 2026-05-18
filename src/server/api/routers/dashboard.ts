@@ -49,10 +49,10 @@ export const dashboardRouter = createTRPCRouter({
         ? {
             OR: [
               {
-                name: { contains: input.search, mode: "insensitive" as const },
+                name: { contains: input.search },
               },
               {
-                email: { contains: input.search, mode: "insensitive" as const },
+                email: { contains: input.search },
               },
             ],
           }

@@ -6,38 +6,46 @@ import {
 } from "~/server/api/trpc";
 import sanitizeHtml from "sanitize-html";
 import { createAuditLog } from "~/server/audit";
+import { parseArrays, stringifyArrays } from "~/server/db-helpers";
+
+const TABLE = "project";
+const TABLE_SECTION = "project_section";
 
 export const projectRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.project.findMany({
+    const results = await ctx.db.project.findMany({
       where: { published: true },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
     });
+    return results.map((r) => parseArrays(r, TABLE));
   }),
 
   getAllAdmin: adminProcedure.query(async ({ ctx }) => {
-    return ctx.db.project.findMany({
+    const results = await ctx.db.project.findMany({
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
       include: { sections: { orderBy: { order: "asc" } } },
     });
+    return results.map((r) => parseArrays(r, TABLE));
   }),
 
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.project.findUnique({
+      const result = await ctx.db.project.findUnique({
         where: { slug: input.slug, published: true },
         include: { sections: { orderBy: { order: "asc" } } },
       });
+      return parseArrays(result, TABLE);
     }),
 
   getByIdAdmin: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.project.findUnique({
+      const result = await ctx.db.project.findUnique({
         where: { id: input.id },
         include: { sections: { orderBy: { order: "asc" } } },
       });
+      return parseArrays(result, TABLE);
     }),
 
   create: adminProcedure
@@ -63,9 +71,10 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const project = await ctx.db.project.create({ data: input });
+      const data = stringifyArrays(input as Record<string, unknown>, TABLE);
+      const project = await ctx.db.project.create({ data: data as any });
       void createAuditLog(ctx.session.user.id, "create", "project", project.id, { slug: project.slug });
-      return project;
+      return parseArrays(project, TABLE);
     }),
 
   update: adminProcedure
@@ -92,11 +101,12 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, ...data } = input;
-      const project = await ctx.db.project.update({ where: { id }, data });
-      const changedFields = Object.keys(data).filter((k) => data[k as keyof typeof data] !== undefined);
+      const { id, ...rest } = input;
+      const data = stringifyArrays(rest as Record<string, unknown>, TABLE);
+      const project = await ctx.db.project.update({ where: { id }, data: data as any });
+      const changedFields = Object.keys(rest).filter((k) => rest[k as keyof typeof rest] !== undefined);
       void createAuditLog(ctx.session.user.id, "update", "project", project.id, { changedFields });
-      return project;
+      return parseArrays(project, TABLE);
     }),
 
   delete: adminProcedure

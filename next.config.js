@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const config = {
   output: "standalone",
   outputFileTracingRoot: __dirname,
+  serverExternalPackages: ["@libsql/client", "@prisma/adapter-libsql"],
   async headers() {
     return [
       {

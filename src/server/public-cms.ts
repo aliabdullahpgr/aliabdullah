@@ -1,6 +1,7 @@
 import "server-only";
 
 import { db } from "~/server/db";
+import { parseArrays } from "~/server/db-helpers";
 
 const defaultChatConfig = {
   pageTitle: "Ask Ali anything",
@@ -14,26 +15,34 @@ export const getPublicSiteConfigs = (keys: string[]) =>
     select: { key: true, value: true },
   });
 
-export const getPublicProjects = () =>
-  db.project.findMany({
+export const getPublicProjects = async () => {
+  const results = await db.project.findMany({
     where: { published: true },
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });
+  return results.map((r) => parseArrays(r, "project"));
+};
 
-export const getPublicProjectBySlug = (slug: string) =>
-  db.project.findUnique({
+export const getPublicProjectBySlug = async (slug: string) => {
+  const result = await db.project.findUnique({
     where: { slug, published: true },
     include: { sections: { orderBy: { order: "asc" } } },
   });
+  return parseArrays(result, "project");
+};
 
-export const getPublicArticles = () =>
-  db.article.findMany({
+export const getPublicArticles = async () => {
+  const results = await db.article.findMany({
     where: { published: true },
     orderBy: { createdAt: "desc" },
   });
+  return results.map((r) => parseArrays(r, "article"));
+};
 
-export const getPublicArticleBySlug = (slug: string) =>
-  db.article.findUnique({ where: { slug, published: true } });
+export const getPublicArticleBySlug = async (slug: string) => {
+  const result = await db.article.findUnique({ where: { slug, published: true } });
+  return parseArrays(result, "article");
+};
 
 export const getPublicChatConfig = async () => {
   const config = await db.chatConfig.findFirst();

@@ -16,7 +16,7 @@ export const auth = betterAuth({
     ...(env.BETTER_AUTH_URL ? [env.BETTER_AUTH_URL] : []),
   ],
   database: prismaAdapter(db, {
-    provider: "postgresql", // or "sqlite" or "mysql"
+    provider: "sqlite", // or "postgresql" or "mysql"
   }),
   emailAndPassword: {
     enabled: true,
