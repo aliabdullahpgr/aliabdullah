@@ -16,7 +16,7 @@ export const auth = betterAuth({
     ...(env.BETTER_AUTH_URL ? [env.BETTER_AUTH_URL] : []),
   ],
   database: prismaAdapter(db, {
-    provider: "sqlite", // or "postgresql" or "mysql"
+    provider: "sqlite",
   }),
   emailAndPassword: {
     enabled: true,
@@ -26,6 +26,21 @@ export const auth = betterAuth({
     github: {
       clientId: env.BETTER_AUTH_GITHUB_CLIENT_ID ?? "",
       clientSecret: env.BETTER_AUTH_GITHUB_CLIENT_SECRET ?? "",
+    },
+  },
+  // Only allow the first-ever user (the owner) to sign in via GitHub
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const existingUsers = await db.user.count();
+          // First user gets admin. Anyone else is rejected.
+          if (existingUsers === 0) {
+            return { data: { ...user, role: "admin" } };
+          }
+          throw new Error("Access denied: only the site owner can log in.");
+        },
+      },
     },
   },
 });
